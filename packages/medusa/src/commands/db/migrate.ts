@@ -31,10 +31,12 @@ export type PhaseStatus = "ran" | "skipped" | "not-enabled"
  */
 export type MigrationSummary = {
   /**
-   * Only modules that had at least one migration executed. A module with
-   * nothing pending is counted in `modulesConsidered` but omitted here.
+   * Every migration that was executed, as a flat list. Each entry names the
+   * module it belongs to, since migration names are only unique within one.
+   * Modules with nothing pending contribute no entries but are still counted
+   * in `modulesConsidered`.
    */
-  migrations: { module: string; migrations: { name: string; path: string }[] }[]
+  migrations: { module: string; name: string; path: string }[]
   modulesConsidered: number
   links: SyncedLinks | null
   search: PhaseStatus
@@ -118,12 +120,9 @@ export async function migrate({
   logger.info("Migrations completed")
 
   const summary: MigrationSummary = {
-    migrations: executedMigrations
-      .filter(({ migrations }) => migrations.length > 0)
-      .map(({ moduleName, migrations }) => ({
-        module: moduleName,
-        migrations,
-      })),
+    migrations: executedMigrations.flatMap(({ moduleName, migrations }) =>
+      migrations.map((migration) => ({ module: moduleName, ...migration }))
+    ),
     modulesConsidered: executedMigrations.length,
     links: null,
     // Both phases are promoted to "ran" only once they actually have.

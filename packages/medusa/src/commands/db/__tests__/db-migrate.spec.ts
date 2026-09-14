@@ -222,7 +222,7 @@ describe("db:migrate – main", () => {
       })
     })
 
-    it("reports the migrations that ran, grouped by module", async () => {
+    it("reports the migrations that ran as a flat list", async () => {
       ;(initializeContainer as jest.Mock).mockResolvedValue(buildContainer())
 
       const { MedusaAppLoader } = require("@medusajs/framework")
@@ -230,7 +230,14 @@ describe("db:migrate – main", () => {
         runModulesMigrations: jest.fn().mockResolvedValue([
           {
             moduleName: "product",
-            migrations: [{ name: "Migration20240101", path: "/product/m.js" }],
+            migrations: [
+              { name: "Migration20240101", path: "/product/a.js" },
+              { name: "Migration20240202", path: "/product/b.js" },
+            ],
+          },
+          {
+            moduleName: "order",
+            migrations: [{ name: "Migration20240303", path: "/order/c.js" }],
           },
           { moduleName: "cart", migrations: [] },
         ]),
@@ -239,14 +246,14 @@ describe("db:migrate – main", () => {
       await main(jsonArgs)
 
       const summary = readSummary()
+      // One flat list across modules, each entry naming its own module.
       expect(summary.migrations).toEqual([
-        {
-          module: "product",
-          migrations: [{ name: "Migration20240101", path: "/product/m.js" }],
-        },
+        { module: "product", name: "Migration20240101", path: "/product/a.js" },
+        { module: "product", name: "Migration20240202", path: "/product/b.js" },
+        { module: "order", name: "Migration20240303", path: "/order/c.js" },
       ])
-      // "cart" had nothing pending, so it is counted but not listed.
-      expect(summary.modulesConsidered).toBe(2)
+      // "cart" had nothing pending, so it is counted but contributes no entry.
+      expect(summary.modulesConsidered).toBe(3)
     })
 
     it("silences the usual log lines", async () => {
