@@ -1,4 +1,5 @@
 import {
+  ExecutedModuleMigrations,
   MedusaApp,
   MedusaAppGetLinksExecutionPlanner,
   MedusaAppMigrateDown,
@@ -169,7 +170,7 @@ export class MedusaAppLoader {
         } = {
       action: "run",
     }
-  ): Promise<void> {
+  ): Promise<ExecutedModuleMigrations[]> {
     const configModules = this.mergeDefaultModules(configManager.config.modules)
 
     const { sharedResourcesConfig, injectedDependencies } =
@@ -189,10 +190,13 @@ export class MedusaAppLoader {
     if (options.action === "revert") {
       await MedusaAppMigrateDown(options.moduleNames!, migrationOptions)
     } else if (options.action === "run") {
-      await MedusaAppMigrateUp(migrationOptions)
+      return await MedusaAppMigrateUp(migrationOptions)
     } else if (options.action === "generate") {
       await MedusaAppMigrateGenerate(options.moduleNames!, migrationOptions)
     }
+
+    // Only "run" reports what it executed.
+    return []
   }
 
   /**

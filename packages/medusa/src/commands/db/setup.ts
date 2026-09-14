@@ -29,7 +29,7 @@ const main = async function ({
 
     container = await initializeContainer(directory)
 
-    const migrated = await migrate({
+    const { success } = await migrate({
       directory,
       skipLinks,
       skipScripts,
@@ -40,7 +40,7 @@ const main = async function ({
       container,
     })
 
-    process.exit(migrated ? 0 : 1)
+    process.exit(success ? 0 : 1)
   } catch (error: any) {
     if (error.name === "ExitPromptError") {
       process.exit()

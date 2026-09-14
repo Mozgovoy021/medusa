@@ -12,11 +12,39 @@ import path, { join } from "path"
 import { initializeContainer } from "../../loaders"
 import { isSearchModuleEnabled } from "../../loaders/search"
 import { ensureDbExists, isPgstreamEnabled } from "../utils"
-import { syncLinks } from "./sync-links"
+import { syncLinks, SyncedLinks } from "./sync-links"
 
 const TERMINAL_SIZE = process.stdout.columns
 
 const cliPath = path.resolve(MEDUSA_CLI_PATH, "..", "..", "cli.js")
+
+/**
+ * A phase that either ran or was skipped via one of the "--skip-*" flags.
+ * Search additionally reports "not-enabled" when no search module is configured,
+ * which is not the same as the user asking to skip it.
+ */
+export type PhaseStatus = "ran" | "skipped" | "not-enabled"
+
+/**
+ * A machine-readable account of what a migration run changed. Emitted by the
+ * "--json" flag in place of the usual log lines.
+ */
+export type MigrationSummary = {
+  /**
+   * Only modules that had at least one migration executed. A module with
+   * nothing pending is counted in `modulesConsidered` but omitted here.
+   */
+  migrations: { module: string; migrations: { name: string; path: string }[] }[]
+  modulesConsidered: number
+  links: SyncedLinks | null
+  search: PhaseStatus
+  scripts: PhaseStatus
+}
+
+export type MigrationOutcome = {
+  success: boolean
+  summary: MigrationSummary
+}
 
 /**
  * A low-level utility to migrate the database. This util should
@@ -44,7 +72,7 @@ export async function migrate({
   concurrency?: number
   logger: Logger
   container: MedusaContainer
-}): Promise<boolean> {
+}): Promise<MigrationOutcome> {
   /**
    * Setup
    */
@@ -82,19 +110,33 @@ export async function migrate({
   const migrator = new Migrator({ container })
   await migrator.ensureMigrationsTable()
 
-  await medusaAppLoader.runModulesMigrations({
+  const executedMigrations = await medusaAppLoader.runModulesMigrations({
     action: "run",
     allOrNothing,
   })
   logger.log(new Array(TERMINAL_SIZE).join("-"))
   logger.info("Migrations completed")
 
+  const summary: MigrationSummary = {
+    migrations: executedMigrations
+      .filter(({ migrations }) => migrations.length > 0)
+      .map(({ moduleName, migrations }) => ({
+        module: moduleName,
+        migrations,
+      })),
+    modulesConsidered: executedMigrations.length,
+    links: null,
+    // Both phases are promoted to "ran" only once they actually have.
+    search: skipSearch ? "skipped" : "not-enabled",
+    scripts: "skipped",
+  }
+
   /**
    * Sync links
    */
   if (!skipLinks) {
     logger.log(new Array(TERMINAL_SIZE).join("-"))
-    await syncLinks(medusaAppLoader, {
+    summary.links = await syncLinks(medusaAppLoader, {
       executeAll: executeAllLinks,
       executeSafe: executeSafeLinks,
       directory,
@@ -112,11 +154,12 @@ export async function migrate({
    */
   if (!skipSearch && isSearchModuleEnabled(configModule)) {
     const exitCode = await runCliCommand("db:migrate:search", directory)
+    summary.search = "ran"
 
     // Reported rather than swallowed: the seed at application start cannot tell a
     // half-migrated index from a fresh one, so this has to be seen now.
     if (exitCode !== 0) {
-      return false
+      return { success: false, summary }
     }
   }
 
@@ -126,9 +169,10 @@ export async function migrate({
      */
     logger.log(new Array(TERMINAL_SIZE).join("-"))
     await runCliCommand("db:migrate:scripts", directory)
+    summary.scripts = "ran"
   }
 
-  return true
+  return { success: true, summary }
 }
 
 async function runCliCommand(
@@ -160,15 +204,43 @@ const main = async function ({
   executeSafeLinks,
   concurrency,
   allOrNothing,
+  json,
 }) {
   process.env.MEDUSA_WORKER_MODE = "server"
   let logger: Logger | undefined
+
+  if (json) {
+    /**
+     * Syncing links prompts for the tables to update and delete unless it is
+     * told upfront which ones are acceptable. A prompt cannot be answered by
+     * whatever is consuming the JSON, and picking an answer here would silently
+     * skip or drop link tables, so refuse instead of guessing.
+     */
+    if (!skipLinks && !executeAllLinks && !executeSafeLinks) {
+      console.error(
+        "--json cannot be used with interactive link syncing. Pass --execute-safe-links, --execute-all-links, or --skip-links."
+      )
+      process.exit(1)
+      return
+    }
+
+    /**
+     * Keeps stdout free of everything but the summary. The env var is what the
+     * forked "db:migrate:search" and "db:migrate:scripts" processes read, since
+     * they build their own logger.
+     */
+    process.env.LOG_LEVEL = "error"
+  }
 
   try {
     const container = await initializeContainer(directory)
     logger = container.resolve(ContainerRegistrationKeys.LOGGER)
 
-    const migrated = await migrate({
+    if (json) {
+      logger.setLogLevel("error")
+    }
+
+    const { success, summary } = await migrate({
       directory,
       skipLinks,
       skipScripts,
@@ -180,7 +252,12 @@ const main = async function ({
       logger,
       container,
     })
-    process.exit(migrated ? 0 : 1)
+
+    if (json) {
+      process.stdout.write(`${JSON.stringify(summary, null, 2)}\n`)
+    }
+
+    process.exit(success ? 0 : 1)
   } catch (error) {
     if (logger) {
       logger.error(error as string | Error)

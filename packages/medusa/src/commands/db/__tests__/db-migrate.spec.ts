@@ -11,7 +11,7 @@ jest.mock("../../../loaders", () => ({
 jest.mock("@medusajs/framework", () => ({
   MEDUSA_CLI_PATH: "/mock/cli",
   MedusaAppLoader: jest.fn().mockImplementation(() => ({
-    runModulesMigrations: jest.fn().mockResolvedValue(undefined),
+    runModulesMigrations: jest.fn().mockResolvedValue([]),
   })),
   Migrator: jest.fn().mockImplementation(() => ({
     ensureMigrationsTable: jest.fn().mockResolvedValue(undefined),
@@ -40,8 +40,18 @@ jest.mock("../../utils", () => ({
   isPgstreamEnabled: jest.fn().mockResolvedValue(false),
 }))
 
+jest.mock("child_process", () => ({
+  fork: jest.fn(),
+}))
+
+jest.mock("../../../loaders/search", () => ({
+  isSearchModuleEnabled: jest.fn().mockReturnValue(false),
+}))
+
 jest.mock("../sync-links", () => ({
-  syncLinks: jest.fn().mockResolvedValue(undefined),
+  syncLinks: jest
+    .fn()
+    .mockResolvedValue({ created: [], updated: [], deleted: [] }),
 }))
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -50,7 +60,12 @@ function buildContainer(
   overrides: Record<string, unknown> = {}
 ): MedusaContainer {
   const store: Record<string, unknown> = {
-    logger: { info: jest.fn(), error: jest.fn(), log: jest.fn() },
+    logger: {
+      info: jest.fn(),
+      error: jest.fn(),
+      log: jest.fn(),
+      setLogLevel: jest.fn(),
+    },
     configModule: { modules: {}, plugins: [] },
     ...overrides,
   }
@@ -72,6 +87,7 @@ const defaultArgs = {
   executeSafeLinks: false,
   concurrency: undefined,
   allOrNothing: false,
+  json: false,
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -134,7 +150,12 @@ describe("db:migrate – main", () => {
     })
 
     it("uses the resolved logger to report migration-phase errors", async () => {
-      const mockLogger = { info: jest.fn(), error: jest.fn(), log: jest.fn() }
+      const mockLogger = {
+        info: jest.fn(),
+        error: jest.fn(),
+        log: jest.fn(),
+        setLogLevel: jest.fn(),
+      }
       ;(initializeContainer as jest.Mock).mockResolvedValue(
         buildContainer({ logger: mockLogger })
       )
@@ -149,6 +170,176 @@ describe("db:migrate – main", () => {
 
       expect(mockLogger.error).toHaveBeenCalledWith(migrationError)
       expect(process.exit).toHaveBeenCalledWith(1)
+    })
+  })
+
+  describe("--json", () => {
+    const jsonArgs = { ...defaultArgs, json: true }
+
+    let stdoutSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      stdoutSpy = jest
+        .spyOn(process.stdout, "write")
+        .mockImplementation(() => true)
+
+      /**
+       * clearAllMocks() drops recorded calls but keeps implementations, so the
+       * defaults have to be restored explicitly for each test in this block.
+       */
+      const { MedusaAppLoader } = require("@medusajs/framework")
+      MedusaAppLoader.mockImplementation(() => ({
+        runModulesMigrations: jest.fn().mockResolvedValue([]),
+      }))
+
+      const { syncLinks } = require("../sync-links")
+      syncLinks.mockResolvedValue({ created: [], updated: [], deleted: [] })
+
+      const { isSearchModuleEnabled } = require("../../../loaders/search")
+      isSearchModuleEnabled.mockReturnValue(false)
+    })
+
+    /**
+     * Reads back what the command wrote to stdout, which must be the summary
+     * and nothing else.
+     */
+    function readSummary() {
+      expect(stdoutSpy).toHaveBeenCalledTimes(1)
+      return JSON.parse(stdoutSpy.mock.calls[0][0] as string)
+    }
+
+    it("writes only the summary to stdout", async () => {
+      ;(initializeContainer as jest.Mock).mockResolvedValue(buildContainer())
+
+      await main(jsonArgs)
+
+      expect(readSummary()).toEqual({
+        migrations: [],
+        modulesConsidered: 0,
+        links: null,
+        search: "skipped",
+        scripts: "skipped",
+      })
+    })
+
+    it("reports the migrations that ran, grouped by module", async () => {
+      ;(initializeContainer as jest.Mock).mockResolvedValue(buildContainer())
+
+      const { MedusaAppLoader } = require("@medusajs/framework")
+      MedusaAppLoader.mockImplementation(() => ({
+        runModulesMigrations: jest.fn().mockResolvedValue([
+          {
+            moduleName: "product",
+            migrations: [{ name: "Migration20240101", path: "/product/m.js" }],
+          },
+          { moduleName: "cart", migrations: [] },
+        ]),
+      }))
+
+      await main(jsonArgs)
+
+      const summary = readSummary()
+      expect(summary.migrations).toEqual([
+        {
+          module: "product",
+          migrations: [{ name: "Migration20240101", path: "/product/m.js" }],
+        },
+      ])
+      // "cart" had nothing pending, so it is counted but not listed.
+      expect(summary.modulesConsidered).toBe(2)
+    })
+
+    it("silences the usual log lines", async () => {
+      const mockLogger = {
+        info: jest.fn(),
+        error: jest.fn(),
+        log: jest.fn(),
+        setLogLevel: jest.fn(),
+      }
+      ;(initializeContainer as jest.Mock).mockResolvedValue(
+        buildContainer({ logger: mockLogger })
+      )
+
+      await main(jsonArgs)
+
+      expect(mockLogger.setLogLevel).toHaveBeenCalledWith("error")
+      // Forked db:migrate:* processes build their own logger from the env.
+      expect(process.env.LOG_LEVEL).toBe("error")
+    })
+
+    it("includes the link tables that were synced", async () => {
+      ;(initializeContainer as jest.Mock).mockResolvedValue(buildContainer())
+
+      const { syncLinks } = require("../sync-links")
+      syncLinks.mockResolvedValue({
+        created: ["product_product_cart_cart"],
+        updated: [],
+        deleted: [],
+      })
+
+      await main({
+        ...jsonArgs,
+        skipLinks: false,
+        executeSafeLinks: true,
+      })
+
+      expect(readSummary().links).toEqual({
+        created: ["product_product_cart_cart"],
+        updated: [],
+        deleted: [],
+      })
+    })
+
+    it("refuses to run when link syncing would prompt", async () => {
+      const consoleSpy = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {})
+      ;(initializeContainer as jest.Mock).mockResolvedValue(buildContainer())
+
+      await main({
+        ...jsonArgs,
+        skipLinks: false,
+        executeAllLinks: false,
+        executeSafeLinks: false,
+      })
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining("--json cannot be used with interactive link")
+      )
+      expect(process.exit).toHaveBeenCalledWith(1)
+      expect(stdoutSpy).not.toHaveBeenCalled()
+    })
+
+    it("does not report scripts as ran when search fails first", async () => {
+      ;(initializeContainer as jest.Mock).mockResolvedValue(buildContainer())
+
+      const { isSearchModuleEnabled } = require("../../../loaders/search")
+      isSearchModuleEnabled.mockReturnValue(true)
+
+      const { fork } = require("child_process")
+      fork.mockImplementation(() => ({
+        on: (event: string, cb: (code: number) => void) => {
+          if (event === "close") {
+            cb(1)
+          }
+        },
+      }))
+
+      await main({ ...jsonArgs, skipSearch: false, skipScripts: false })
+
+      const summary = readSummary()
+      expect(summary.search).toBe("ran")
+      // Search bailed out before the scripts phase was reached.
+      expect(summary.scripts).toBe("skipped")
+      expect(process.exit).toHaveBeenCalledWith(1)
+    })
+
+    it("does not touch stdout without the flag", async () => {
+      ;(initializeContainer as jest.Mock).mockResolvedValue(buildContainer())
+
+      await main(defaultArgs)
+
+      expect(stdoutSpy).not.toHaveBeenCalled()
     })
   })
 })

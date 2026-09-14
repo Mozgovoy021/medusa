@@ -255,6 +255,12 @@ function buildLocalCommands(cli, isLocalProject) {
             "If set, the command will fail if any migration fails and revert the migrations that were applied so far",
           default: false,
         })
+        builder.option("json", {
+          type: "boolean",
+          describe:
+            "Print a machine-readable summary of what ran to stdout instead of the usual log lines. Requires one of --skip-links, --execute-safe-links or --execute-all-links, since link syncing is otherwise interactive",
+          default: false,
+        })
       },
       handler: handlerP(
         getCommandHandler("db/migrate", (args, cmd) => {
