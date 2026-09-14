@@ -4303,9 +4303,15 @@
             },
             "groups": {
               "type": "string"
+            },
+            "note": {
+              "type": "string"
+            },
+            "noteHint": {
+              "type": "string"
             }
           },
-          "required": ["guest", "registered", "groups"],
+          "required": ["guest", "registered", "groups", "note", "noteHint"],
           "additionalProperties": false
         },
         "registered": {

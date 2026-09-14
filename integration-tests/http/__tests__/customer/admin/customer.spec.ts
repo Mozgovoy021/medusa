@@ -207,9 +207,59 @@ medusaIntegrationTestRunner({
           })
         )
       })
+
+      it("should create a customer with an internal note", async () => {
+        const response = await api.post(
+          "/admin/customers",
+          {
+            email: "noted@email.com",
+            note: "Prefers to be contacted by email only.",
+          },
+          adminHeaders
+        )
+
+        expect(response.status).toEqual(200)
+        expect(response.data.customer).toEqual(
+          expect.objectContaining({
+            email: "noted@email.com",
+            note: "Prefers to be contacted by email only.",
+          })
+        )
+      })
     })
 
     describe("POST /admin/customers/:id", () => {
+      it("should set and clear a customer's internal note", async () => {
+        let response = await api.post(
+          `/admin/customers/${customer4.id}`,
+          { note: "VIP, ships to a forwarding address." },
+          adminHeaders
+        )
+
+        expect(response.status).toEqual(200)
+        expect(response.data.customer.note).toEqual(
+          "VIP, ships to a forwarding address."
+        )
+
+        response = await api.get(
+          `/admin/customers/${customer4.id}`,
+          adminHeaders
+        )
+
+        expect(response.data.customer.note).toEqual(
+          "VIP, ships to a forwarding address."
+        )
+
+        response = await api.post(
+          `/admin/customers/${customer4.id}`,
+          { note: null },
+          adminHeaders
+        )
+
+        expect(response.status).toEqual(200)
+        expect(response.data.customer.note).toBeNull()
+      })
+
       it("should correctly update customer", async () => {
         const response = await api
           .post(

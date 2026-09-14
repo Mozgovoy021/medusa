@@ -195,6 +195,12 @@ export interface CreateCustomerDTO {
   phone?: string | null
 
   /**
+   * An internal note about the customer. This note is intended for admin users
+   * only and is not exposed through the Store API.
+   */
+  note?: string | null
+
+  /**
    * Who created the customer.
    */
   created_by?: string | null
@@ -250,6 +256,12 @@ export interface UpdateCustomerDTO {
   phone?: string | null
 
   /**
+   * An internal note about the customer. This note is intended for admin users
+   * only and is not exposed through the Store API.
+   */
+  note?: string | null
+
+  /**
    * Holds custom data in key-value pairs.
    */
   metadata?: MetadataType
@@ -283,6 +295,12 @@ export interface CustomerUpdatableFields {
    * The phone of the customer.
    */
   phone?: string | null
+
+  /**
+   * An internal note about the customer. This note is intended for admin users
+   * only and is not exposed through the Store API.
+   */
+  note?: string | null
 
   /**
    * Holds custom data in key-value pairs.

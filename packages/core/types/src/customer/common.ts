@@ -505,6 +505,12 @@ export interface CustomerDTO {
   phone: string | null
 
   /**
+   * An internal note about the customer. This note is intended for admin users
+   * only and is not exposed through the Store API.
+   */
+  note: string | null
+
+  /**
    * The groups of the customer.
    */
   groups: {

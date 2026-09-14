@@ -300,6 +300,87 @@ medusaIntegrationTestRunner({
           }),
         })
       })
+
+      it("should not allow a customer to set their own internal note", async () => {
+        const { customer, jwt } = await createAuthenticatedCustomer(
+          api,
+          storeHeaders
+        )
+
+        const customerHeaders = {
+          headers: {
+            authorization: `Bearer ${jwt}`,
+            ...storeHeaders.headers,
+          },
+        }
+
+        await api.post(
+          `/admin/customers/${customer.id}`,
+          { note: "Internal: chargeback risk." },
+          adminHeaders
+        )
+
+        // `note` is not part of the store update payload, and body schemas are
+        // parsed strictly, so the request is rejected rather than partially applied.
+        const error = await api
+          .post(
+            `/store/customers/me`,
+            { first_name: "John2", note: "Please give me a discount." },
+            customerHeaders
+          )
+          .catch((e) => e)
+
+        expect(error.response.status).toEqual(400)
+        expect(error.response.data.message).toContain(
+          "Unrecognized fields: 'note'"
+        )
+
+        const adminResponse = await api.get(
+          `/admin/customers/${customer.id}`,
+          adminHeaders
+        )
+
+        expect(adminResponse.data.customer.note).toEqual(
+          "Internal: chargeback risk."
+        )
+      })
+    })
+
+    describe("GET /store/customers/me", () => {
+      it("should never expose the internal note to the customer", async () => {
+        const { customer, jwt } = await createAuthenticatedCustomer(
+          api,
+          storeHeaders
+        )
+
+        const customerHeaders = {
+          headers: {
+            authorization: `Bearer ${jwt}`,
+            ...storeHeaders.headers,
+          },
+        }
+
+        await api.post(
+          `/admin/customers/${customer.id}`,
+          { note: "Internal: do not offer store credit." },
+          adminHeaders
+        )
+
+        const response = await api.get(`/store/customers/me`, customerHeaders)
+
+        expect(response.status).toEqual(200)
+        expect(response.data.customer.note).toBeUndefined()
+
+        // `note` is not in the store route's allowed fields, so an explicit
+        // request for it is stripped rather than honoured.
+        const explicit = await api.get(
+          `/store/customers/me?fields=%2Bnote`,
+          customerHeaders
+        )
+
+        expect(explicit.status).toEqual(200)
+        expect(explicit.data.customer.note).toBeUndefined()
+      })
     })
   },
 })
