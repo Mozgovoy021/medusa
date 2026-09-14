@@ -93,6 +93,15 @@ async function askForLinkActionsToPerform(
 }
 
 /**
+ * The link tables touched by a sync, grouped by the action applied to them.
+ */
+export type SyncedLinks = {
+  created: string[]
+  updated: string[]
+  deleted: string[]
+}
+
+/**
  * Low-level utility to sync links. This utility is used
  * by the migrate command as-well.
  */
@@ -111,7 +120,7 @@ export async function syncLinks(
     container: MedusaContainer
     concurrency?: number
   }
-) {
+): Promise<SyncedLinks> {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
 
   // Check if pgstream is enabled - if so, force concurrency to 1
@@ -202,6 +211,12 @@ export async function syncLinks(
     logger.info("Links sync completed")
   } else {
     logger.info("Database already up-to-date")
+  }
+
+  return {
+    created: toCreate.map((action) => action.tableName),
+    updated: toUpdate.map((action) => action.tableName),
+    deleted: toDelete.map((action) => action.tableName),
   }
 }
 

@@ -107,9 +107,27 @@ export async function verifyMigrationConnection(
   }
 }
 
+/**
+ * A single migration that was executed against the database.
+ */
+export type ExecutedMigration = {
+  name: string
+  path: string
+}
+
+/**
+ * The migrations that were executed, grouped by the module they belong to.
+ * Modules without pending migrations are reported with an empty list, so
+ * consumers can tell "nothing to do" apart from "module not considered".
+ */
+export type ExecutedModuleMigrations = {
+  moduleName: string
+  migrations: ExecutedMigration[]
+}
+
 export type RunMigrationFn = (options?: {
   allOrNothing?: boolean
-}) => Promise<void>
+}) => Promise<ExecutedModuleMigrations[]>
 export type RevertMigrationFn = (moduleNames: string[]) => Promise<void>
 export type GenerateMigrations = (moduleNames: string[]) => Promise<void>
 export type GetLinkExecutionPlanner = () => ILinkMigrationsPlanner
@@ -591,7 +609,7 @@ async function MedusaApp_({
     modulesNames: string[]
     action?: "run" | "revert" | "generate"
     allOrNothing?: boolean
-  }): Promise<{ name: string; path: string }[] | void> => {
+  }): Promise<ExecutedModuleMigrations[]> => {
     const moduleResolutions = Array.from(new Set(modulesNames)).map(
       (moduleName) => {
         return {
@@ -618,6 +636,12 @@ async function MedusaApp_({
     }
 
     let executedResolutions: [any, string[]][] = [] // [moduleResolution, migration names[]]
+
+    /**
+     * Reported back to the caller, unlike `executedResolutions` which is
+     * consumed by the all-or-nothing revert and only needs the names.
+     */
+    const executedMigrations: ExecutedModuleMigrations[] = []
 
     const lockKnex = ModulesSdkUtils.createPgConnection({
       ...dbData,
@@ -666,6 +690,11 @@ async function MedusaApp_({
             moduleResolution,
             ranMigrationsResult?.map((r) => r.name) ?? [],
           ])
+
+          executedMigrations.push({
+            moduleName: moduleResolution.definition.key,
+            migrations: ranMigrationsResult ?? [],
+          })
         } else {
           await MedusaModule.migrateGenerate(migrationOptions)
         }
@@ -706,14 +735,17 @@ async function MedusaApp_({
     } finally {
       await lockKnex.destroy()
     }
+
+    // Empty for "revert" and "generate", which do not report what they touched.
+    return executedMigrations
   }
 
   const runMigrations: RunMigrationFn = async (
     { allOrNothing = false }: { allOrNothing?: boolean } = {
       allOrNothing: false,
     }
-  ): Promise<void> => {
-    await applyMigration({
+  ): Promise<ExecutedModuleMigrations[]> => {
+    return await applyMigration({
       modulesNames: Object.keys(allModules),
       allOrNothing,
     })
@@ -793,7 +825,7 @@ export async function MedusaApp(
 
 export async function MedusaAppMigrateUp(
   options: MedusaAppOptions & { allOrNothing?: boolean } = {}
-): Promise<void> {
+): Promise<ExecutedModuleMigrations[]> {
   const migrationOnly = true
 
   const { runMigrations } = await MedusaApp_({
@@ -801,7 +833,7 @@ export async function MedusaAppMigrateUp(
     migrationOnly,
   })
 
-  await runMigrations({ allOrNothing: options.allOrNothing }).finally(
+  return await runMigrations({ allOrNothing: options.allOrNothing }).finally(
     MedusaModule.clearInstances
   )
 }
