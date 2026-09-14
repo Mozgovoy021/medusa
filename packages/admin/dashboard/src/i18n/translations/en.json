@@ -1102,7 +1102,9 @@
     "fields": {
       "guest": "Guest",
       "registered": "Registered",
-      "groups": "Groups"
+      "groups": "Groups",
+      "note": "Internal note",
+      "noteHint": "Only visible to staff in the admin dashboard. Never shown to the customer."
     },
     "registered": "Registered",
     "guest": "Guest",

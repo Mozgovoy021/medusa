@@ -10,6 +10,7 @@ export const defaultAdminCustomerFields = [
   "last_name",
   "email",
   "phone",
+  "note",
   "metadata",
   "has_account",
   "created_by",

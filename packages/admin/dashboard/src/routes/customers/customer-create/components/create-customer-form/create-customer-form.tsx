@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Button, Heading, Input, Text, toast } from "@medusajs/ui"
+import { Button, Heading, Input, Text, Textarea, toast } from "@medusajs/ui"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
@@ -18,6 +18,7 @@ const CreateCustomerSchema = zod.object({
   last_name: zod.string().optional(),
   company_name: zod.string().optional(),
   phone: zod.string().optional(),
+  note: zod.string().optional(),
 })
 
 export const CreateCustomerForm = () => {
@@ -33,6 +34,7 @@ export const CreateCustomerForm = () => {
       last_name: "",
       phone: "",
       company_name: "",
+      note: "",
     },
     resolver: zodResolver(CreateCustomerSchema),
   })
@@ -45,6 +47,7 @@ export const CreateCustomerForm = () => {
         last_name: data.last_name || undefined,
         company_name: data.company_name || undefined,
         phone: data.phone || undefined,
+        note: data.note || undefined,
       },
       {
         onSuccess: ({ customer }) => {
@@ -148,6 +151,24 @@ export const CreateCustomerForm = () => {
                       <Form.Control>
                         <Input autoComplete="off" {...field} />
                       </Form.Control>
+                      <Form.ErrorMessage />
+                    </Form.Item>
+                  )
+                }}
+              />
+              <Form.Field
+                control={form.control}
+                name="note"
+                render={({ field }) => {
+                  return (
+                    <Form.Item className="md:col-span-2">
+                      <Form.Label optional>
+                        {t("customers.fields.note")}
+                      </Form.Label>
+                      <Form.Control>
+                        <Textarea {...field} />
+                      </Form.Control>
+                      <Form.Hint>{t("customers.fields.noteHint")}</Form.Hint>
                       <Form.ErrorMessage />
                     </Form.Item>
                   )

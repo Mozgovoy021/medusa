@@ -132,6 +132,14 @@ export const CustomerGeneralSection = ({
           {customer.phone || "-"}
         </Text>
       </div>
+      <div className="text-ui-fg-subtle grid grid-cols-2 items-start px-6 py-4">
+        <Text size="small" leading="compact" weight="plus">
+          {t("customers.fields.note")}
+        </Text>
+        <Text size="small" leading="compact" className="whitespace-pre-wrap">
+          {customer.note || "-"}
+        </Text>
+      </div>
     </Container>
   )
 }
