@@ -12,6 +12,7 @@ const Customer = model
     email: model.text().searchable().nullable(),
     phone: model.text().searchable().nullable(),
     has_account: model.boolean().default(false),
+    internal_note: model.text().nullable(),
     metadata: model.json().nullable(),
     created_by: model.text().nullable(),
     groups: model.manyToMany(() => CustomerGroup, {

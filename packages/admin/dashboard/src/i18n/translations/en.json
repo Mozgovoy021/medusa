@@ -1102,7 +1102,12 @@
     "fields": {
       "guest": "Guest",
       "registered": "Registered",
-      "groups": "Groups"
+      "groups": "Groups",
+      "internalNote": {
+        "label": "Internal note",
+        "hint": "Only visible to staff. Never shown to the customer.",
+        "placeholder": "Prefers phone contact, refunded twice in 2024."
+      }
     },
     "registered": "Registered",
     "guest": "Guest",

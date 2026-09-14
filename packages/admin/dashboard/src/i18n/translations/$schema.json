@@ -4303,9 +4303,25 @@
             },
             "groups": {
               "type": "string"
+            },
+            "internalNote": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "placeholder": {
+                  "type": "string"
+                }
+              },
+              "required": ["label", "hint", "placeholder"],
+              "additionalProperties": false
             }
           },
-          "required": ["guest", "registered", "groups"],
+          "required": ["guest", "registered", "groups", "internalNote"],
           "additionalProperties": false
         },
         "registered": {

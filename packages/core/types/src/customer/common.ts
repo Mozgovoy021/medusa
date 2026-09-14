@@ -519,6 +519,12 @@ export interface CustomerDTO {
   }[]
 
   /**
+   * An internal note about the customer. This field is only exposed in the
+   * Admin API and is never returned by Store API routes.
+   */
+  internal_note: string | null
+
+  /**
    * Holds custom data in key-value pairs.
    */
   metadata: Record<string, unknown>
