@@ -205,6 +205,12 @@ export interface CreateCustomerDTO {
   has_account?: boolean
 
   /**
+   * An internal note about the customer. This field is only exposed in the
+   * Admin API and is never returned by Store API routes.
+   */
+  internal_note?: string | null
+
+  /**
    * The addresses of the customer.
    */
   addresses?: Omit<CreateCustomerAddressDTO, "customer_id">[]
@@ -245,6 +251,12 @@ export interface UpdateCustomerDTO {
   email?: string | null
 
   /**
+   * An internal note about the customer. This field is only exposed in the
+   * Admin API and is never returned by Store API routes.
+   */
+  internal_note?: string | null
+
+  /**
    * The phone of the customer.
    */
   phone?: string | null
@@ -278,6 +290,12 @@ export interface CustomerUpdatableFields {
    * The email of the customer.
    */
   email?: string | null
+
+  /**
+   * An internal note about the customer. This field is only exposed in the
+   * Admin API and is never returned by Store API routes.
+   */
+  internal_note?: string | null
 
   /**
    * The phone of the customer.

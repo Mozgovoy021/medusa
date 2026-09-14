@@ -207,6 +207,26 @@ medusaIntegrationTestRunner({
           })
         )
       })
+
+      it("should create a customer with an internal note", async () => {
+        const response = await api.post(
+          "/admin/customers",
+          {
+            first_name: "noted",
+            email: "noted@email.com",
+            internal_note: "VIP - handle with care",
+          },
+          adminHeaders
+        )
+
+        expect(response.status).toEqual(200)
+        expect(response.data.customer).toEqual(
+          expect.objectContaining({
+            email: "noted@email.com",
+            internal_note: "VIP - handle with care",
+          })
+        )
+      })
     })
 
     describe("POST /admin/customers/:id", () => {
@@ -235,6 +255,37 @@ medusaIntegrationTestRunner({
             metadata: { foo: "bar", bar: "bar", baz: "baz" },
           })
         )
+      })
+
+      it("should update and clear a customer's internal note", async () => {
+        let response = await api.post(
+          `/admin/customers/${customer3.id}`,
+          { internal_note: "Refund requested twice" },
+          adminHeaders
+        )
+
+        expect(response.status).toEqual(200)
+        expect(response.data.customer.internal_note).toEqual(
+          "Refund requested twice"
+        )
+
+        response = await api.get(
+          `/admin/customers/${customer3.id}`,
+          adminHeaders
+        )
+
+        expect(response.data.customer.internal_note).toEqual(
+          "Refund requested twice"
+        )
+
+        response = await api.post(
+          `/admin/customers/${customer3.id}`,
+          { internal_note: null },
+          adminHeaders
+        )
+
+        expect(response.status).toEqual(200)
+        expect(response.data.customer.internal_note).toEqual(null)
       })
 
       it("should correctly update customer metadata", async () => {

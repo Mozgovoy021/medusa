@@ -56,6 +56,7 @@ export const CreateCustomer = z.object({
   first_name: z.string().nullish(),
   last_name: z.string().nullish(),
   phone: z.string().nullish(),
+  internal_note: z.string().nullish(),
   metadata: z.record(z.string(), z.unknown()).nullish(),
 })
 export const AdminCreateCustomer = WithAdditionalData(CreateCustomer)
@@ -66,6 +67,7 @@ export const UpdateCustomer = z.object({
   first_name: z.string().nullish(),
   last_name: z.string().nullish(),
   phone: z.string().nullish(),
+  internal_note: z.string().nullish(),
   metadata: z.record(z.string(), z.unknown()).nullish(),
 })
 export const AdminUpdateCustomer = WithAdditionalData(UpdateCustomer)

@@ -300,6 +300,49 @@ medusaIntegrationTestRunner({
           }),
         })
       })
+
+      it("should not expose or allow writing internal_note", async () => {
+        const { customer, jwt } = await createAuthenticatedCustomer(
+          api,
+          storeHeaders
+        )
+
+        const customerHeaders = {
+          headers: {
+            authorization: `Bearer ${jwt}`,
+            ...storeHeaders.headers,
+          },
+        }
+
+        // Store body schemas are parsed with .strict(), so an unknown key is
+        // rejected outright rather than silently dropped.
+        const error = await api
+          .post(
+            `/store/customers/me`,
+            { first_name: "John2", internal_note: "injected by storefront" },
+            customerHeaders
+          )
+          .catch((e) => e)
+
+        expect(error.response.status).toEqual(400)
+        expect(error.response.data.message).toContain("internal_note")
+
+        // It must not be selectable via ?fields either.
+        const getResponse = await api.get(
+          `/store/customers/me?fields=%2Binternal_note`,
+          customerHeaders
+        )
+
+        expect(getResponse.data.customer.internal_note).toBeUndefined()
+
+        // And nothing should have been written to the customer.
+        const adminResponse = await api.get(
+          `/admin/customers/${customer.id}`,
+          adminHeaders
+        )
+
+        expect(adminResponse.data.customer.internal_note).toEqual(null)
+      })
     })
   },
 })

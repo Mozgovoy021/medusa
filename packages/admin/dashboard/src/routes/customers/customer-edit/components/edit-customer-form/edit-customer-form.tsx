@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HttpTypes } from "@medusajs/types"
-import { Button, Input, toast } from "@medusajs/ui"
+import { Button, Input, Textarea, toast } from "@medusajs/ui"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import * as zod from "zod"
@@ -23,6 +23,7 @@ const EditCustomerSchema = zod.object({
   last_name: zod.string().optional(),
   company_name: zod.string().optional(),
   phone: zod.string().optional(),
+  internal_note: zod.string().optional(),
 })
 
 export const EditCustomerForm = ({ customer }: EditCustomerFormProps) => {
@@ -36,6 +37,7 @@ export const EditCustomerForm = ({ customer }: EditCustomerFormProps) => {
       last_name: customer.last_name || "",
       company_name: customer.company_name || "",
       phone: customer.phone || "",
+      internal_note: customer.internal_note || "",
     },
     resolver: zodResolver(EditCustomerSchema),
   })
@@ -50,6 +52,7 @@ export const EditCustomerForm = ({ customer }: EditCustomerFormProps) => {
         last_name: data.last_name || null,
         phone: data.phone || null,
         company_name: data.company_name || null,
+        internal_note: data.internal_note || null,
       },
       {
         onSuccess: ({ customer }) => {
@@ -148,6 +151,31 @@ export const EditCustomerForm = ({ customer }: EditCustomerFormProps) => {
                     <Form.Control>
                       <Input {...field} />
                     </Form.Control>
+                    <Form.ErrorMessage />
+                  </Form.Item>
+                )
+              }}
+            />
+            <Form.Field
+              control={form.control}
+              name="internal_note"
+              render={({ field }) => {
+                return (
+                  <Form.Item>
+                    <Form.Label optional>
+                      {t("customers.fields.internalNote.label")}
+                    </Form.Label>
+                    <Form.Control>
+                      <Textarea
+                        {...field}
+                        placeholder={t(
+                          "customers.fields.internalNote.placeholder"
+                        )}
+                      />
+                    </Form.Control>
+                    <Form.Hint>
+                      {t("customers.fields.internalNote.hint")}
+                    </Form.Hint>
                     <Form.ErrorMessage />
                   </Form.Item>
                 )

@@ -7,6 +7,10 @@ export interface AdminCustomer extends BaseCustomer {
    */
   has_account: boolean
   /**
+   * An internal note about the customer, only visible to admin users.
+   */
+  internal_note: string | null
+  /**
    * The groups the customer is in.
    */
   groups?: AdminCustomerGroup[]
