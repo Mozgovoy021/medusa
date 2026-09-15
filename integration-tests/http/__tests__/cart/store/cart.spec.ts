@@ -775,6 +775,21 @@ medusaIntegrationTestRunner({
           )
         })
 
+        it("should return a 400 when adding a line item with a fractional quantity", async () => {
+          const error = await api
+            .post(
+              `/store/carts/${cart.id}/line-items`,
+              {
+                variant_id: product.variants[0].id,
+                quantity: 0.1,
+              },
+              storeHeaders
+            )
+            .catch((e) => e)
+
+          expect(error.response.status).toEqual(400)
+        })
+
         it("should return a 400 instead of a 500 when adding a variant with no price", async () => {
           const productData = {
             title: "Medusa T-Shirt with no price",
