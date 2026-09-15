@@ -67,6 +67,7 @@ const cartFields = [
   "sales_channel_id",
   "item_total",
   "total",
+  "weight_total",
 ]
 
 export const listShippingOptionsForCartWithPricingWorkflowId =
