@@ -37,6 +37,7 @@ import {
   updateCartsStep,
   validateCartItemsStep,
   validateCartPaymentsStep,
+  validatePaymentAmountStep,
   validateShippingStep,
 } from "../steps"
 import { compensatePaymentIfNeededStep } from "../steps/compensate-payment-if-needed"
@@ -57,6 +58,19 @@ export type CompleteCartWorkflowInput = {
    * The ID of the cart to complete.
    */
   id: string
+  /**
+   * Whether to validate that the cart's processable payment sessions' amounts match the cart's
+   * total before authorizing payment. If a payment session's amount doesn't match the cart's
+   * total, the workflow throws an error instead of completing the cart.
+   *
+   * This is enabled by default, since completing a cart whose payment session amount silently
+   * diverges from its total can authorize or capture the wrong amount. Set this to `false` if you
+   * intentionally complete carts with mismatched amounts, such as deposits or partial
+   * authorizations.
+   *
+   * @default true
+   */
+  validate_payment_amount?: boolean
 }
 
 export type CompleteCartWorkflowOutput = {
@@ -81,18 +95,25 @@ export const completeCartWorkflowId = "complete-cart"
  *
  * ## Payment Validation
  *
- * When completing a cart, this workflow validates the cart's payment sessions, but it doesn't validate payment amounts.
+ * When completing a cart, this workflow validates the cart's payment sessions.
  *
  * The workflow requires the cart's payment collection to have at least one payment session in a processable status: `pending`,
  * `requires_more`, `authorized`, `captured`, or `pending_authorization` (used for asynchronous or deferred authorization, such as
  * bank transfers). If the payment collection hasn't been initiated, or no payment session is in a processable status, the workflow
  * throws an error.
  *
- * The workflow doesn't compare the authorized or captured amount against the cart's total. It neither requires the amount to equal
- * the cart's total nor enforces a minimum amount. The amount that's authorized or captured is the payment session's own amount, which
- * is set to the cart's total when the payment collection is created or refreshed. So, if the cart changes after its payment collection
- * is created without the payment collection being refreshed, the workflow authorizes or captures the payment session's existing amount
- * and records it in the order's transactions as-is.
+ * By default, the workflow also compares the amount that's about to be authorized or captured against the cart's total. The amount
+ * that's authorized or captured is the payment session's own amount, which is set to the cart's total when the payment collection is
+ * created or refreshed. So, if the cart changes after its payment collection is created without the payment collection being
+ * refreshed, a processable payment session's amount can diverge from the cart's total. By default, the workflow throws an error in
+ * this case instead of silently authorizing or capturing the payment session's existing (and now incorrect) amount. This check is
+ * skipped for idempotent re-completions of a cart that already has an order (since the payment was already authorized against the
+ * cart's total on the first completion) and for carts whose total is zero and covered entirely by credit lines.
+ *
+ * If your use case intentionally completes carts with mismatched amounts, such as deposits or partial authorizations, pass
+ * `validate_payment_amount: false` in the workflow's input to disable this check. When disabled, the workflow neither requires the
+ * amount to equal the cart's total nor enforces a minimum amount, and it records the payment session's existing amount in the order's
+ * transactions as-is.
  *
  * If the cart's total is zero and covered by credit lines, the workflow can complete the cart without a payment session.
  *
@@ -398,6 +419,16 @@ export const completeCartWorkflow = createWorkflow(
     // and tries to refund the payment if captured
     compensatePaymentIfNeededStep({
       payment_session_id: paymentSessions[0].id,
+    })
+
+    when("validate-payment-amount", { input }, ({ input }) => {
+      return input.validate_payment_amount !== false
+    }).then(() => {
+      validatePaymentAmountStep({
+        cart: cartData.data,
+        paymentSessions,
+        orderId,
+      })
     })
 
     const validate = createHook("validate", {
