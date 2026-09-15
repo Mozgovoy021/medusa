@@ -428,6 +428,45 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
               })
             )
           })
+
+          it("should return a single object when updating by id", async () => {
+            const result = await service.updatePaymentCollections(
+              "pay-col-id-2",
+              { currency_code: "eur" }
+            )
+
+            expect(Array.isArray(result)).toBe(false)
+            expect(result).toEqual(
+              expect.objectContaining({
+                id: "pay-col-id-2",
+                currency_code: "eur",
+              })
+            )
+          })
+
+          it("should return an array when updating by a selector that matches records", async () => {
+            const result = await service.updatePaymentCollections(
+              { id: ["pay-col-id-2"] },
+              { currency_code: "eur" }
+            )
+
+            expect(Array.isArray(result)).toBe(true)
+            expect(result).toEqual([
+              expect.objectContaining({
+                id: "pay-col-id-2",
+                currency_code: "eur",
+              }),
+            ])
+          })
+
+          it("should return an empty array when updating by a selector that matches no records", async () => {
+            const result = await service.updatePaymentCollections(
+              { id: ["pay-col-id-does-not-exist"] },
+              { currency_code: "eur" }
+            )
+
+            expect(result).toEqual([])
+          })
         })
 
         describe("complete", () => {
