@@ -39,10 +39,8 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              queueOptions: sharedQueueOptions,
-            },
+            redisUrl: "redis://localhost:6379",
+            queueOptions: sharedQueueOptions,
           },
         } as any,
         {} as any
@@ -69,10 +67,8 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              workerOptions: sharedWorkerOptions,
-            },
+            redisUrl: "redis://localhost:6379",
+            workerOptions: sharedWorkerOptions,
           },
         } as any,
         {} as any
@@ -104,11 +100,9 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              queueOptions: sharedQueueOptions,
-              mainQueueOptions: mainQueueOptions,
-            },
+            redisUrl: "redis://localhost:6379",
+            queueOptions: sharedQueueOptions,
+            mainQueueOptions: mainQueueOptions,
           },
         } as any,
         {} as any
@@ -138,12 +132,10 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              workerOptions: sharedWorkerOptions,
-              jobWorkerOptions: jobWorkerOptions,
-              cleanerWorkerOptions: cleanerWorkerOptions,
-            },
+            redisUrl: "redis://localhost:6379",
+            workerOptions: sharedWorkerOptions,
+            jobWorkerOptions: jobWorkerOptions,
+            cleanerWorkerOptions: cleanerWorkerOptions,
           },
         } as any,
         {} as any
@@ -178,11 +170,9 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              workerOptions: sharedWorkerOptions,
-              mainWorkerOptions: mainWorkerOptions,
-            },
+            redisUrl: "redis://localhost:6379",
+            workerOptions: sharedWorkerOptions,
+            mainWorkerOptions: mainWorkerOptions,
           },
         } as any,
         {} as any
@@ -204,9 +194,7 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              url: "redis://localhost:6379",
-            },
+            url: "redis://localhost:6379",
           },
         } as any,
         {} as any
@@ -223,10 +211,8 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              options: { maxRetriesPerRequest: 3 },
-            },
+            redisUrl: "redis://localhost:6379",
+            options: { maxRetriesPerRequest: 3 },
           },
         } as any,
         {} as any
@@ -243,10 +229,8 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              redisOptions: { maxRetriesPerRequest: 3 },
-            },
+            redisUrl: "redis://localhost:6379",
+            redisOptions: { maxRetriesPerRequest: 3 },
           },
         } as any,
         {} as any
@@ -263,9 +247,7 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-            },
+            redisUrl: "redis://localhost:6379",
           },
         } as any,
         {} as any
@@ -285,11 +267,9 @@ describe("Redis Loader", () => {
           container: containerMock as any,
           logger: loggerMock,
           options: {
-            redis: {
-              redisUrl: "redis://localhost:6379",
-              queueName: "custom-workflows",
-              jobQueueName: "custom-jobs",
-            },
+            redisUrl: "redis://localhost:6379",
+            queueName: "custom-workflows",
+            jobQueueName: "custom-jobs",
           },
         } as any,
         {} as any
@@ -302,6 +282,51 @@ describe("Redis Loader", () => {
     })
   })
 
+  describe("Backward-compatible nested `redis` options", () => {
+    it("should still accept the nested `options.redis` shape", async () => {
+      await redisLoader(
+        {
+          container: containerMock as any,
+          logger: loggerMock,
+          options: {
+            redis: {
+              redisUrl: "redis://localhost:6379",
+              queueName: "nested-workflows",
+            },
+          },
+        } as any,
+        {} as any
+      )
+
+      const registerCall = containerMock.register.mock.calls[0][0]
+
+      expect(registerCall.redisQueueName.resolve()).toEqual(
+        "nested-workflows"
+      )
+    })
+
+    it("should prefer top-level options over nested `redis` options", async () => {
+      await redisLoader(
+        {
+          container: containerMock as any,
+          logger: loggerMock,
+          options: {
+            queueName: "top-level-name",
+            redis: {
+              redisUrl: "redis://localhost:6379",
+              queueName: "nested-name",
+            },
+          },
+        } as any,
+        {} as any
+      )
+
+      const registerCall = containerMock.register.mock.calls[0][0]
+
+      expect(registerCall.redisQueueName.resolve()).toEqual("top-level-name")
+    })
+  })
+
   describe("Error handling", () => {
     it("should throw error when redisUrl is not provided", async () => {
       await expect(
@@ -309,15 +334,11 @@ describe("Redis Loader", () => {
           {
             container: containerMock as any,
             logger: loggerMock,
-            options: {
-              redis: {},
-            },
+            options: {},
           } as any,
           {} as any
         )
-      ).rejects.toThrow(
-        "No `redis.redisUrl` (or deprecated `redis.url`) provided"
-      )
+      ).rejects.toThrow("No `redisUrl` (or deprecated `url`) provided")
     })
   })
 })

@@ -28,7 +28,7 @@ Our Cloud offering automatically provisions a Redis instance and configures the 
 Add the module into the `modules` property of the exported object in `medusa-config.ts`:
 
 export const highlights = [
-  ["8", "redisUrl", "The Redis connection URL."]
+  ["7", "redisUrl", "The Redis connection URL."]
 ]
 
 ```ts title="medusa-config.ts" highlights={highlights}
@@ -38,10 +38,8 @@ module.exports = defineConfig({
     {
       resolve: "@medusajs/medusa/workflow-engine-redis",
       options: {
-        redis: {
-          redisUrl: process.env.WE_REDIS_URL,
-          // ...other Redis options
-        },
+        redisUrl: process.env.WE_REDIS_URL,
+        // ...other Redis options
       },
     },
   ],
