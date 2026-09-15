@@ -693,12 +693,17 @@ export default class FulfillmentModuleService
       sharedContext
     )
 
+    const serializedFulfillment =
+      await this.baseRepository_.serialize<FulfillmentTypes.FulfillmentDTO>(
+        fulfillment
+      )
+
     try {
       const providerResult =
         await this.fulfillmentProviderService_.createReturn(
           fulfillment.provider_id!, // TODO: should we add a runtime check on provider_id being provided?,
           {
-            ...fulfillment,
+            ...serializedFulfillment,
             shipping_option: shippingOption,
           } as Record<any, any>
         )
