@@ -823,6 +823,42 @@ medusaIntegrationTestRunner({
         expect(orderChangesResult.length).toEqual(0)
       })
 
+      it("should add a shipping address on an order that has none", async () => {
+        const orderModuleService = container.resolve(
+          ModuleRegistrationName.ORDER
+        )
+
+        await orderModuleService.updateOrders([
+          { id: order.id, shipping_address_id: null },
+        ])
+
+        const response = await api.post(
+          `/admin/orders/${order.id}`,
+          {
+            shipping_address: {
+              first_name: "New",
+              last_name: "Address",
+              address_1: "New Main street 123",
+              city: "New New York",
+              country_code: "us",
+              postal_code: "12345",
+            },
+          },
+          adminHeaders
+        )
+
+        expect(response.data.order.shipping_address).toEqual(
+          expect.objectContaining({
+            first_name: "New",
+            last_name: "Address",
+            address_1: "New Main street 123",
+            city: "New New York",
+            country_code: "us",
+            postal_code: "12345",
+          })
+        )
+      })
+
       it("should update billing address on an order (by creating a new Address record)", async () => {
         const addressBefore = order.billing_address
 
