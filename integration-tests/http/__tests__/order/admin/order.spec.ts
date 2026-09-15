@@ -823,7 +823,7 @@ medusaIntegrationTestRunner({
         expect(orderChangesResult.length).toEqual(0)
       })
 
-      it("should add a shipping address on an order that has none", async () => {
+      it("should add a shipping address on an order that has none, but still reject a later country code change", async () => {
         const orderModuleService = container.resolve(
           ModuleRegistrationName.ORDER
         )
@@ -832,7 +832,7 @@ medusaIntegrationTestRunner({
           { id: order.id, shipping_address_id: null },
         ])
 
-        const response = await api.post(
+        const addResponse = await api.post(
           `/admin/orders/${order.id}`,
           {
             shipping_address: {
@@ -847,7 +847,7 @@ medusaIntegrationTestRunner({
           adminHeaders
         )
 
-        expect(response.data.order.shipping_address).toEqual(
+        expect(addResponse.data.order.shipping_address).toEqual(
           expect.objectContaining({
             first_name: "New",
             last_name: "Address",
@@ -856,6 +856,23 @@ medusaIntegrationTestRunner({
             country_code: "us",
             postal_code: "12345",
           })
+        )
+
+        const changeResponse = await api
+          .post(
+            `/admin/orders/${order.id}`,
+            {
+              shipping_address: {
+                country_code: "HR",
+              },
+            },
+            adminHeaders
+          )
+          .catch((e) => e)
+
+        expect(changeResponse.response.status).toBe(400)
+        expect(changeResponse.response.data.message).toBe(
+          "Country code cannot be changed"
         )
       })
 
