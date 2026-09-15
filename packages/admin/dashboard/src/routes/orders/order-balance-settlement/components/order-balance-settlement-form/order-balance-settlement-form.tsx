@@ -7,7 +7,6 @@ import {
   Divider,
   Label,
   RadioGroup,
-  Select,
   Textarea,
   toast,
 } from "@medusajs/ui"
@@ -27,8 +26,9 @@ import {
 } from "../../../../../hooks/api"
 import { currencies } from "../../../../../lib/data/currencies"
 import { formatCurrency } from "../../../../../lib/format-currency"
-import { getLocaleAmount } from "../../../../../lib/money-amount-helpers"
 import { getPaymentsFromOrder } from "../../../../../lib/orders"
+import { PaymentSelect } from "../../../common/payment-select"
+import { RefundReasonSelect } from "../../../common/refund-reason-select"
 
 const OrderBalanceSettlementSchema = zod.object({
   settlement_type: zod.enum(["credit_line", "refund"]),
@@ -39,6 +39,7 @@ const OrderBalanceSettlementSchema = zod.object({
         float: zod.number().or(zod.null()),
       }),
       note: zod.string().optional(),
+      refund_reason_id: zod.string().optional(),
     })
     .optional(),
   credit_line: zod
@@ -127,6 +128,7 @@ export const OrderBalanceSettlementForm = ({
         {
           amount: data.refund!.amount!.float!,
           note: data.refund!.note,
+          refund_reason_id: data.refund!.refund_reason_id,
         },
         {
           onSuccess: () => {
@@ -224,53 +226,13 @@ export const OrderBalanceSettlementForm = ({
             {settlementType === "refund" && (
               <>
                 <div className="flex flex-col gap-y-4">
-                  <Select
-                    defaultValue={activePayment?.id}
+                  <PaymentSelect
+                    payments={payments}
+                    value={activePayment?.id}
                     onValueChange={(value) => {
                       setActivePayment(payments.find((p) => p.id === value)!)
                     }}
-                  >
-                    <Label className="txt-compact-small mb-[-6px] font-sans font-medium">
-                      {t("orders.payment.selectPaymentToRefund")}
-                    </Label>
-
-                    <Select.Trigger>
-                      <Select.Value
-                        placeholder={t("orders.payment.selectPaymentToRefund")}
-                      />
-                    </Select.Trigger>
-
-                    <Select.Content>
-                      {payments.map((payment) => {
-                        const totalRefunded =
-                          payment.refunds?.reduce(
-                            (acc, next) => next.amount + acc,
-                            0
-                          ) ?? 0
-
-                        return (
-                          <Select.Item
-                            value={payment!.id}
-                            key={payment.id}
-                            disabled={
-                              !!payment.canceled_at ||
-                              totalRefunded >= payment.amount
-                            }
-                          >
-                            <span>
-                              {getLocaleAmount(
-                                payment.amount as number,
-                                payment.currency_code
-                              )}
-                              {" - "}
-                            </span>
-                            <span>{payment.provider_id}</span>
-                            <span> - ({payment.id.replace("pay_", "")})</span>
-                          </Select.Item>
-                        )
-                      })}
-                    </Select.Content>
-                  </Select>
+                  />
                 </div>
 
                 <Form.Field
@@ -300,6 +262,27 @@ export const OrderBalanceSettlementForm = ({
                               })
                             }
                             autoFocus
+                          />
+                        </Form.Control>
+
+                        <Form.ErrorMessage />
+                      </Form.Item>
+                    )
+                  }}
+                />
+
+                <Form.Field
+                  control={form.control}
+                  name="refund.refund_reason_id"
+                  render={({ field }) => {
+                    return (
+                      <Form.Item>
+                        <Form.Label>{t("fields.refundReason")}</Form.Label>
+
+                        <Form.Control>
+                          <RefundReasonSelect
+                            value={field.value}
+                            onValueChange={field.onChange}
                           />
                         </Form.Control>
 
