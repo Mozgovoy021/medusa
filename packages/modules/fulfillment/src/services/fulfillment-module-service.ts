@@ -182,10 +182,9 @@ export default class FulfillmentModuleService
       context,
       config: normalizedConfig,
       filters: normalizedFilters,
-    } = FulfillmentModuleService.normalizeListShippingOptionsForContextParams(
-      filters,
-      config
-    )
+    } = (
+      this.constructor as typeof FulfillmentModuleService
+    ).normalizeListShippingOptionsForContextParams(filters, config)
 
     let shippingOptions = await this.shippingOptionService_.list(
       normalizedFilters,
@@ -318,7 +317,9 @@ export default class FulfillmentModuleService
       if (fulfillmentSet.service_zones?.length) {
         for (const serviceZone of fulfillmentSet.service_zones) {
           if (serviceZone.geo_zones?.length) {
-            FulfillmentModuleService.validateGeoZones(serviceZone.geo_zones)
+            ;(
+              this.constructor as typeof FulfillmentModuleService
+            ).validateGeoZones(serviceZone.geo_zones)
           }
         }
       }
@@ -380,7 +381,9 @@ export default class FulfillmentModuleService
     for (const serviceZone of data_) {
       if (serviceZone.geo_zones?.length) {
         if (serviceZone.geo_zones?.length) {
-          FulfillmentModuleService.validateGeoZones(serviceZone.geo_zones)
+          ;(
+            this.constructor as typeof FulfillmentModuleService
+          ).validateGeoZones(serviceZone.geo_zones)
         }
       }
     }
@@ -524,7 +527,9 @@ export default class FulfillmentModuleService
   ): Promise<FulfillmentTypes.GeoZoneDTO | FulfillmentTypes.GeoZoneDTO[]> {
     const data_ = Array.isArray(data) ? data : [data]
 
-    FulfillmentModuleService.validateGeoZones(data_)
+    ;(this.constructor as typeof FulfillmentModuleService).validateGeoZones(
+      data_
+    )
 
     const createdGeoZones = await this.geoZoneService_.create(
       data_,
@@ -870,9 +875,9 @@ export default class FulfillmentModuleService
             (serviceZone) => {
               if (!("id" in serviceZone)) {
                 if (serviceZone.geo_zones?.length) {
-                  FulfillmentModuleService.validateGeoZones(
-                    serviceZone.geo_zones
-                  )
+                  ;(
+                    this.constructor as typeof FulfillmentModuleService
+                  ).validateGeoZones(serviceZone.geo_zones)
                 }
                 return serviceZone
               }
@@ -1084,7 +1089,9 @@ export default class FulfillmentModuleService
 
         serviceZone.geo_zones = serviceZone.geo_zones.map((geoZone) => {
           if (!("id" in geoZone)) {
-            FulfillmentModuleService.validateGeoZones([geoZone])
+            ;(
+              this.constructor as typeof FulfillmentModuleService
+            ).validateGeoZones([geoZone])
             return geoZone
           }
           const existing = geoZonesMap.get(geoZone.id)!
@@ -1287,10 +1294,9 @@ export default class FulfillmentModuleService
       shippingOptions.map((s) => [s.id, s])
     )
 
-    FulfillmentModuleService.validateMissingShippingOptions_(
-      shippingOptions,
-      dataArray
-    )
+    ;(
+      this.constructor as typeof FulfillmentModuleService
+    ).validateMissingShippingOptions_(shippingOptions, dataArray)
 
     const ruleIdsToDelete: string[] = []
     const updatedRuleIds: string[] = []
@@ -1314,8 +1320,9 @@ export default class FulfillmentModuleService
       const existingRules = existingShippingOption.rules
 
       existingRuleIds.push(...existingRules.map((r) => r.id))
-
-      FulfillmentModuleService.validateMissingShippingOptionRules(
+      ;(
+        this.constructor as typeof FulfillmentModuleService
+      ).validateMissingShippingOptionRules(
         existingShippingOption,
         shippingOption
       )
@@ -1736,7 +1743,9 @@ export default class FulfillmentModuleService
       return []
     }
 
-    FulfillmentModuleService.validateGeoZones(data_)
+    ;(this.constructor as typeof FulfillmentModuleService).validateGeoZones(
+      data_
+    )
 
     const updatedGeoZones = await this.geoZoneService_.update(
       data_,
@@ -1897,7 +1906,9 @@ export default class FulfillmentModuleService
       sharedContext
     )
 
-    FulfillmentModuleService.canCancelFulfillmentOrThrow(fulfillment)
+    ;(
+      this.constructor as typeof FulfillmentModuleService
+    ).canCancelFulfillmentOrThrow(fulfillment)
 
     // Make this action idempotent
     if (!fulfillment.canceled_at) {
@@ -2227,8 +2238,9 @@ export default class FulfillmentModuleService
     }
 
     if (address) {
-      const geoZoneConstraints =
-        FulfillmentModuleService.buildGeoZoneConstraintsFromAddress(address)
+      const geoZoneConstraints = (
+        this.constructor as typeof FulfillmentModuleService
+      ).buildGeoZoneConstraintsFromAddress(address)
 
       if (geoZoneConstraints.length) {
         normalizedFilters = {
