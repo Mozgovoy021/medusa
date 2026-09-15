@@ -74,6 +74,7 @@ export const updateOrderValidationStep = createStep(
     throwIfOrderIsCancelled({ order })
 
     if (
+      order.shipping_address?.country_code &&
       input.shipping_address?.country_code &&
       order.shipping_address?.country_code !==
         input.shipping_address?.country_code
@@ -85,6 +86,7 @@ export const updateOrderValidationStep = createStep(
     }
 
     if (
+      order.billing_address?.country_code &&
       input.billing_address?.country_code &&
       order.billing_address?.country_code !==
         input.billing_address?.country_code
