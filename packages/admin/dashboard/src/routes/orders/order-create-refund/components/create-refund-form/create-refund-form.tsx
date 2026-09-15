@@ -1,13 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { HttpTypes } from "@medusajs/types"
-import {
-  Button,
-  CurrencyInput,
-  Label,
-  Select,
-  Textarea,
-  toast,
-} from "@medusajs/ui"
+import { Button, CurrencyInput, Textarea, toast } from "@medusajs/ui"
 import { useEffect, useMemo, useState } from "react"
 import { formatValue } from "react-currency-input-field"
 import { useForm } from "react-hook-form"
@@ -17,7 +10,7 @@ import * as zod from "zod"
 import { Form } from "../../../../../components/common/form"
 import { RouteDrawer, useRouteModal } from "../../../../../components/modals"
 import { KeyboundForm } from "../../../../../components/utilities/keybound-form"
-import { useRefundPayment, useRefundReasons } from "../../../../../hooks/api"
+import { useRefundPayment } from "../../../../../hooks/api"
 import { currencies } from "../../../../../lib/data/currencies"
 import { formatCurrency } from "../../../../../lib/format-currency"
 import {
@@ -25,8 +18,8 @@ import {
   getLocaleAmount,
 } from "../../../../../lib/money-amount-helpers"
 import { getPaymentsFromOrder } from "../../../../../lib/orders"
-import { useDocumentDirection } from "../../../../../hooks/use-document-direction"
-import { formatProvider } from "../../../../../lib/format-provider.ts"
+import { PaymentSelect } from "../../../common/payment-select"
+import { RefundReasonSelect } from "../../../common/refund-reason-select"
 
 type CreateRefundFormProps = {
   order: HttpTypes.AdminOrder
@@ -44,7 +37,6 @@ const CreateRefundSchema = zod.object({
 export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
   const { t } = useTranslation()
   const { handleSuccess } = useRouteModal()
-  const { refund_reasons } = useRefundReasons()
 
   const [searchParams] = useSearchParams()
   const hasPaymentIdInSearchParams = !!searchParams.get("paymentId")
@@ -60,7 +52,6 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
     [order.currency_code]
   )
 
-  const direction = useDocumentDirection()
   const decimalDigits = getDecimalDigits(order.currency_code)
 
   // Uses toLocaleString to match getStylizedAmount's rounding and keep the button and form in sync.
@@ -136,55 +127,11 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
         <RouteDrawer.Body className="flex-1 overflow-auto">
           <div className="flex flex-col gap-y-4">
             {!hasPaymentIdInSearchParams && (
-              <Select
-                dir={direction}
+              <PaymentSelect
+                payments={payments}
                 value={paymentId}
-                onValueChange={(value) => {
-                  setPaymentId(value)
-                }}
-              >
-                <Label className="txt-compact-small mb-[-6px] font-sans font-medium">
-                  {t("orders.payment.selectPaymentToRefund")}
-                </Label>
-
-                <Select.Trigger>
-                  <Select.Value
-                    placeholder={t("orders.payment.selectPaymentToRefund")}
-                  />
-                </Select.Trigger>
-
-                <Select.Content>
-                  {payments.map((payment) => {
-                    const totalRefunded =
-                      payment.refunds?.reduce(
-                        (acc, next) => next.amount + acc,
-                        0
-                      ) || 0
-
-                    return (
-                      <Select.Item
-                        value={payment!.id}
-                        key={payment.id}
-                        disabled={
-                          !!payment.canceled_at ||
-                          totalRefunded >= payment.amount
-                        }
-                        className="flex items-center justify-center"
-                      >
-                        <span>
-                          {getLocaleAmount(
-                            payment.amount as number,
-                            payment.currency_code
-                          )}
-                          {" - "}
-                        </span>
-                        <span>{formatProvider(payment.provider_id)}</span>
-                        <span> - (#{payment.id.substring(23)})</span>
-                      </Select.Item>
-                    )
-                  })}
-                </Select.Content>
-              </Select>
+                onValueChange={setPaymentId}
+              />
             )}
             {hasPaymentIdInSearchParams && (
               <div className="flex items-center">
@@ -249,23 +196,10 @@ export const CreateRefundForm = ({ order }: CreateRefundFormProps) => {
                     <Form.Label>{t("fields.refundReason")}</Form.Label>
 
                     <Form.Control>
-                      <Select
-                        dir={direction}
+                      <RefundReasonSelect
                         value={field.value}
                         onValueChange={field.onChange}
-                      >
-                        <Select.Trigger>
-                          <Select.Value />
-                        </Select.Trigger>
-
-                        <Select.Content>
-                          {refund_reasons?.map((reason) => (
-                            <Select.Item key={reason.id} value={reason.id}>
-                              {reason.label}
-                            </Select.Item>
-                          ))}
-                        </Select.Content>
-                      </Select>
+                      />
                     </Form.Control>
 
                     <Form.ErrorMessage />
