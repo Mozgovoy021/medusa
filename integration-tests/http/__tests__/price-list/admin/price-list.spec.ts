@@ -177,6 +177,31 @@ medusaIntegrationTestRunner({
             })
           )
         })
+
+        it("normalizes the legacy customer_group_id rule attribute to customer.groups.id", async () => {
+          const payload = getPricelistFixture({
+            title: "VIP Winter sale",
+            description: "Winter sale for VIP customers.",
+            rules: {
+              customer_group_id: [customerGroup1.id],
+            },
+          })
+
+          const response = await api.post(
+            "/admin/price-lists",
+            payload,
+            adminHeaders
+          )
+
+          expect(response.status).toEqual(200)
+          expect(response.data.price_list).toEqual(
+            expect.objectContaining({
+              rules: {
+                "customer.groups.id": [expect.stringContaining("cusgroup_")],
+              },
+            })
+          )
+        })
       })
 
       describe("GET /admin/price-lists", () => {
