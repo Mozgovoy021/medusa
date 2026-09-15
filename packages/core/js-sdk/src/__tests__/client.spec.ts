@@ -25,6 +25,16 @@ const server = setupServer(
       statusText: "Internal Server Error",
     })
   }),
+  http.get(`${baseUrl}/throw-with-code`, ({ request, params, cookies }) => {
+    return HttpResponse.json(
+      {
+        message: "Product with id: prod_123 was not found",
+        code: "not_found",
+        type: "not_found",
+      },
+      { status: 404, statusText: "Not Found" }
+    )
+  }),
   http.get(`${baseUrl}/header`, ({ request }) => {
     if (
       request.headers.get("X-custom-header") === "test" &&
@@ -239,6 +249,16 @@ describe("Client", () => {
       const err: FetchError = await client.fetch<any>("throw").catch((e) => e)
       expect(err.status).toEqual(500)
       expect(err.message).toEqual("Internal Server Error")
+    })
+
+    it("should forward the code and type from the JSON error body", async () => {
+      const err: FetchError = await client
+        .fetch<any>("throw-with-code")
+        .catch((e) => e)
+      expect(err.status).toEqual(404)
+      expect(err.message).toEqual("Product with id: prod_123 was not found")
+      expect(err.code).toEqual("not_found")
+      expect(err.type).toEqual("not_found")
     })
   })
 
