@@ -440,3 +440,28 @@ describe("Client", () => {
     })
   })
 })
+
+describe("FetchError", () => {
+  it("should set message, statusText, status, code, and type from the constructor", () => {
+    const err = new FetchError(
+      "Product with id: prod_123 was not found",
+      "Not Found",
+      404,
+      "not_found",
+      "not_found"
+    )
+
+    expect(err.message).toEqual("Product with id: prod_123 was not found")
+    expect(err.statusText).toEqual("Not Found")
+    expect(err.status).toEqual(404)
+    expect(err.code).toEqual("not_found")
+    expect(err.type).toEqual("not_found")
+  })
+
+  it("should leave code and type undefined when not provided", () => {
+    const err = new FetchError("Internal Server Error", "Internal Server Error", 500)
+
+    expect(err.code).toBeUndefined()
+    expect(err.type).toBeUndefined()
+  })
+})
