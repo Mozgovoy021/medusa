@@ -10,6 +10,7 @@ import {
   getSelectsAndRelationsFromObjectArray,
 } from "@medusajs/framework/utils"
 import { StepResponse, createStep } from "@medusajs/framework/workflows-sdk"
+import { normalizePriceListRuleAttributes } from "../utils/normalize-price-list-rule-attributes"
 
 /**
  * The price lists to update.
@@ -44,7 +45,14 @@ export const updatePriceListsStep = createStep(
       data
     )
 
-    const updatedPriceLists = await pricingModule.updatePriceLists(data)
+    const normalizedData = data.map((priceListDTO) => ({
+      ...priceListDTO,
+      rules: normalizePriceListRuleAttributes(priceListDTO.rules),
+    }))
+
+    const updatedPriceLists = await pricingModule.updatePriceLists(
+      normalizedData
+    )
 
     return new StepResponse(updatedPriceLists, {
       dataBeforeUpdate,
