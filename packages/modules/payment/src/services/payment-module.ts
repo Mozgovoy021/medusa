@@ -83,6 +83,12 @@ type InjectedDependencies = {
   paymentProviderService: PaymentProviderService
 }
 
+// Marks a refund whose provider call hasn't been confirmed successful yet, so
+// a retry can find and reuse it as the same idempotency key instead of
+// creating a new refund (and therefore a new key) for the same logical
+// operation.
+const REFUND_PENDING_PROVIDER_CALL_MARKER = "__pending_provider_call"
+
 const generateMethodForModels = {
   PaymentCollection,
   PaymentSession,
@@ -253,9 +259,9 @@ export default class PaymentModuleService
         {
           id: idOrSelector,
           ...data,
-          ...(data.currency_code ? 
-            { currency_code: normalizeCurrencyCode(data.currency_code) } :
-            {}),
+          ...(data.currency_code
+            ? { currency_code: normalizeCurrencyCode(data.currency_code) }
+            : {}),
         },
       ]
     } else {
@@ -268,10 +274,9 @@ export default class PaymentModuleService
       updateData = collections.map((c) => ({
         id: c.id,
         ...data,
-        ...(data.currency_code ?
-          { currency_code: normalizeCurrencyCode(data.currency_code) } :
-          {}
-        ),
+        ...(data.currency_code
+          ? { currency_code: normalizeCurrencyCode(data.currency_code) }
+          : {}),
       }))
     }
 
@@ -328,10 +333,9 @@ export default class PaymentModuleService
       )
       .map((element) => ({
         ...element,
-        ...(element.currency_code ? 
-          { currency_code: normalizeCurrencyCode(element.currency_code) } :
-          {}
-        )
+        ...(element.currency_code
+          ? { currency_code: normalizeCurrencyCode(element.currency_code) }
+          : {}),
       }))
     const forCreate = input
       .filter(
@@ -339,10 +343,9 @@ export default class PaymentModuleService
       )
       .map((element) => ({
         ...element,
-        ...(element.currency_code ? 
-          { currency_code: normalizeCurrencyCode(element.currency_code) } :
-          {}
-        )
+        ...(element.currency_code
+          ? { currency_code: normalizeCurrencyCode(element.currency_code) }
+          : {}),
       }))
 
     const operations: Promise<InferEntityType<typeof PaymentCollection>[]>[] =
@@ -829,9 +832,12 @@ export default class PaymentModuleService
       { select: ["id"], relations: ["captures.raw_amount"] },
       sharedContext
     )
-    const capturedAmount = lockedPayment.captures.reduce((captureAmount, next) => {
-      return MathBN.add(captureAmount, next.raw_amount as BigNumberInput)
-    }, MathBN.convert(0))
+    const capturedAmount = lockedPayment.captures.reduce(
+      (captureAmount, next) => {
+        return MathBN.add(captureAmount, next.raw_amount as BigNumberInput)
+      },
+      MathBN.convert(0)
+    )
 
     const authorizedAmount = new BigNumber(payment.raw_amount as BigNumberInput)
     const newCaptureAmount = new BigNumber(data.amount)
@@ -938,12 +944,48 @@ export default class PaymentModuleService
       },
       sharedContext
     )
-    const refund = await this.refundPayment_(payment, data, sharedContext)
+    const { refund, isRetry } = await this.refundPayment_(
+      payment,
+      data,
+      sharedContext
+    )
 
     try {
       await this.refundPaymentFromProvider_(payment, refund, sharedContext)
+
+      if (REFUND_PENDING_PROVIDER_CALL_MARKER in (refund.metadata ?? {})) {
+        // `update` merges metadata rather than replacing it (see
+        // `mergeMetadata`), and the merge treats an empty-string value as a
+        // delete instruction for that key - so this removes only the marker
+        // and leaves any caller-provided metadata untouched.
+        await this.refundService_.update(
+          {
+            id: refund.id,
+            metadata: { [REFUND_PENDING_PROVIDER_CALL_MARKER]: "" },
+          },
+          sharedContext
+        )
+      }
     } catch (error) {
-      await super.deleteRefunds({ id: refund.id }, sharedContext)
+      if (isRetry) {
+        // The reused idempotency key still failed: rotate it so a
+        // deterministic provider error tied to this key (e.g. Stripe replaying
+        // the same failure verbatim) doesn't permanently block retries.
+        await super.deleteRefunds({ id: refund.id }, sharedContext)
+      } else {
+        // Keep the refund row so a retry reuses its id as the idempotency key
+        // instead of sending the provider a brand new one.
+        await this.refundService_.update(
+          {
+            id: refund.id,
+            metadata: {
+              ...(refund.metadata as Record<string, unknown> | null),
+              [REFUND_PENDING_PROVIDER_CALL_MARKER]: true,
+            },
+          },
+          sharedContext
+        )
+      }
       throw error
     }
 
@@ -964,7 +1006,10 @@ export default class PaymentModuleService
     payment: InferEntityType<typeof Payment>,
     data: CreateRefundDTO,
     @MedusaContext() sharedContext: Context = {}
-  ): Promise<InferEntityType<typeof Refund>> {
+  ): Promise<{
+    refund: InferEntityType<typeof Refund>
+    isRetry: boolean
+  }> {
     // If no amount is passed, we assume the full payment amount needs to be
     // refunded. An explicit amount, however, must be strictly positive.
     if (data.amount == null) {
@@ -1003,17 +1048,47 @@ export default class PaymentModuleService
       data.payment_id,
       {
         select: ["id"],
-        relations: ["captures.raw_amount", "refunds.raw_amount"],
+        relations: [
+          "captures.raw_amount",
+          "refunds.raw_amount",
+          "refunds.metadata",
+        ],
       },
       sharedContext
     )
-    const capturedAmount = lockedPayment.captures.reduce((captureAmount, next) => {
-      const amountAsBigNumber = new BigNumber(next.raw_amount as BigNumberInput)
-      return MathBN.add(captureAmount, amountAsBigNumber)
-    }, MathBN.convert(0))
-    const refundedAmount = lockedPayment.refunds.reduce((refundedAmount, next) => {
-      return MathBN.add(refundedAmount, next.raw_amount as BigNumberInput)
-    }, MathBN.convert(0))
+    // A refund left over from a failed provider call on a previous attempt is
+    // reused (same id, same idempotency key) instead of creating a new row, so
+    // a provider that already processed it can deduplicate the retry. It's
+    // matched on amount since a payment routinely carries several refunds.
+    const pendingRetryRefund = lockedPayment.refunds.find(
+      (next) =>
+        !!(next.metadata as Record<string, unknown> | null)?.[
+          REFUND_PENDING_PROVIDER_CALL_MARKER
+        ] &&
+        MathBN.eq(
+          next.raw_amount as BigNumberInput,
+          data.amount as BigNumberInput
+        )
+    )
+
+    const capturedAmount = lockedPayment.captures.reduce(
+      (captureAmount, next) => {
+        const amountAsBigNumber = new BigNumber(
+          next.raw_amount as BigNumberInput
+        )
+        return MathBN.add(captureAmount, amountAsBigNumber)
+      },
+      MathBN.convert(0)
+    )
+    const refundedAmount = lockedPayment.refunds.reduce(
+      (refundedAmount, next) => {
+        if (next.id === pendingRetryRefund?.id) {
+          return refundedAmount
+        }
+        return MathBN.add(refundedAmount, next.raw_amount as BigNumberInput)
+      },
+      MathBN.convert(0)
+    )
 
     const totalRefundedAmount = MathBN.add(refundedAmount, data.amount)
 
@@ -1034,6 +1109,10 @@ export default class PaymentModuleService
       )
     }
 
+    if (pendingRetryRefund) {
+      return { refund: pendingRetryRefund, isRetry: true }
+    }
+
     const refund = await this.refundService_.create(
       {
         payment: data.payment_id,
@@ -1046,7 +1125,7 @@ export default class PaymentModuleService
       sharedContext
     )
 
-    return refund
+    return { refund, isRetry: false }
   }
 
   @InjectManager()
@@ -1120,7 +1199,11 @@ export default class PaymentModuleService
         // right after sessions/captures/refunds were created, and select-in
         // does not otherwise re-populate collections that are already loaded on
         // the managed entities in the shared context.
-        relations: ["payment_sessions", "payments.captures", "payments.refunds"],
+        relations: [
+          "payment_sessions",
+          "payments.captures",
+          "payments.refunds",
+        ],
         options: { refresh: true },
       },
       sharedContext

@@ -732,10 +732,7 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
                 status: "pending_authorization",
               })
 
-            const result = await service.authorizePaymentSession(
-              session.id,
-              {}
-            )
+            const result = await service.authorizePaymentSession(session.id, {})
 
             expect(result).toBeNull()
 
@@ -753,8 +750,9 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
             expect(payments).toHaveLength(0)
 
             // Verify payment collection stays in awaiting
-            const updatedCollection =
-              await service.retrievePaymentCollection(collection.id)
+            const updatedCollection = await service.retrievePaymentCollection(
+              collection.id
+            )
             expect(updatedCollection.status).toBe("awaiting")
           })
 
@@ -816,8 +814,9 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
             )
 
             // Verify payment collection is now authorized
-            const updatedCollection =
-              await service.retrievePaymentCollection(collection.id)
+            const updatedCollection = await service.retrievePaymentCollection(
+              collection.id
+            )
             expect(updatedCollection.status).toBe("authorized")
           })
 
@@ -1338,6 +1337,119 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
               "You cannot refund more than what is captured on the payment."
             )
           })
+
+          it("should reuse the same idempotency key when retrying a refund after a provider failure", async () => {
+            await service.capturePayment({
+              amount: 100,
+              payment_id: "pay-id-1",
+            })
+
+            const refundPaymentMock = jest
+              .spyOn((service as any).paymentProviderService_, "refundPayment")
+              .mockRejectedValueOnce(new Error("timeout"))
+              .mockResolvedValueOnce({ data: {} })
+
+            const error = await service
+              .refundPayment({ amount: 50, payment_id: "pay-id-1" })
+              .catch((e) => e)
+
+            expect(error.message).toEqual("timeout")
+
+            await service.refundPayment({
+              amount: 50,
+              payment_id: "pay-id-1",
+            })
+
+            expect(refundPaymentMock).toHaveBeenCalledTimes(2)
+
+            const firstKey =
+              refundPaymentMock.mock.calls[0][1].context.idempotency_key
+            const secondKey =
+              refundPaymentMock.mock.calls[1][1].context.idempotency_key
+
+            expect(firstKey).toEqual(secondKey)
+
+            const payment = await service.retrievePayment("pay-id-1", {
+              relations: ["refunds"],
+            })
+            expect(payment.refunds).toHaveLength(1)
+            expect(payment.refunds![0].metadata).not.toHaveProperty(
+              "__pending_provider_call"
+            )
+          })
+
+          it("should rotate the idempotency key if the reused refund fails again", async () => {
+            await service.capturePayment({
+              amount: 100,
+              payment_id: "pay-id-1",
+            })
+
+            const refundPaymentMock = jest
+              .spyOn((service as any).paymentProviderService_, "refundPayment")
+              .mockRejectedValueOnce(new Error("timeout"))
+              .mockRejectedValueOnce(new Error("timeout again"))
+              .mockResolvedValueOnce({ data: {} })
+
+            await service
+              .refundPayment({ amount: 50, payment_id: "pay-id-1" })
+              .catch((e) => e)
+            await service
+              .refundPayment({ amount: 50, payment_id: "pay-id-1" })
+              .catch((e) => e)
+            await service.refundPayment({
+              amount: 50,
+              payment_id: "pay-id-1",
+            })
+
+            expect(refundPaymentMock).toHaveBeenCalledTimes(3)
+
+            const [firstKey, secondKey, thirdKey] =
+              refundPaymentMock.mock.calls.map(
+                (call) => call[1].context.idempotency_key
+              )
+
+            expect(secondKey).toEqual(firstKey)
+            expect(thirdKey).not.toEqual(secondKey)
+
+            const payment = await service.retrievePayment("pay-id-1", {
+              relations: ["refunds"],
+            })
+            expect(payment.refunds).toHaveLength(1)
+          })
+
+          it("should preserve caller-provided metadata when clearing the retry marker", async () => {
+            await service.capturePayment({
+              amount: 100,
+              payment_id: "pay-id-1",
+            })
+
+            jest
+              .spyOn((service as any).paymentProviderService_, "refundPayment")
+              .mockRejectedValueOnce(new Error("timeout"))
+              .mockResolvedValueOnce({ data: {} })
+
+            await service
+              .refundPayment({
+                amount: 50,
+                payment_id: "pay-id-1",
+                metadata: { reason: "customer request" },
+              })
+              .catch((e) => e)
+
+            await service.refundPayment({
+              amount: 50,
+              payment_id: "pay-id-1",
+              metadata: { reason: "customer request" },
+            })
+
+            const payment = await service.retrievePayment("pay-id-1", {
+              relations: ["refunds"],
+            })
+            expect(payment.refunds).toHaveLength(1)
+            expect(payment.refunds![0].metadata).toEqual({
+              reason: "customer request",
+            })
+          })
         })
 
         describe("cancel", () => {
@@ -1353,13 +1465,13 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
           })
 
           it("should persist the data returned by the payment provider on cancel", async () => {
-            const providerData = { canceled: true, provider_cancel_id: "ext-cancel-123" }
+            const providerData = {
+              canceled: true,
+              provider_cancel_id: "ext-cancel-123",
+            }
 
             jest
-              .spyOn(
-                (service as any).paymentProviderService_,
-                "cancelPayment"
-              )
+              .spyOn((service as any).paymentProviderService_, "cancelPayment")
               .mockResolvedValueOnce({ data: providerData })
 
             const payment = await service.cancelPayment("pay-id-2")
@@ -1600,17 +1712,26 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
               data: {},
             })
 
-            const payment = await service.authorizePaymentSession(session.id, {})
+            const payment = await service.authorizePaymentSession(
+              session.id,
+              {}
+            )
 
             // Two concurrent captures that each pass the guard in isolation
             // (500 - 0 = 500 remaining seen by both) but together capture 600.
             const outcomes = await promiseAll([
               service
                 .capturePayment({ amount: 300, payment_id: payment.id })
-                .then(() => "ok", () => "threw"),
+                .then(
+                  () => "ok",
+                  () => "threw"
+                ),
               service
                 .capturePayment({ amount: 300, payment_id: payment.id })
-                .then(() => "ok", () => "threw"),
+                .then(
+                  () => "ok",
+                  () => "threw"
+                ),
             ])
 
             // Exactly one capture is admitted; the other is rejected by the guard.
@@ -1636,19 +1757,31 @@ moduleIntegrationTestRunner<IPaymentModuleService>({
               data: {},
             })
 
-            const payment = await service.authorizePaymentSession(session.id, {})
+            const payment = await service.authorizePaymentSession(
+              session.id,
+              {}
+            )
 
-            await service.capturePayment({ amount: 500, payment_id: payment.id })
+            await service.capturePayment({
+              amount: 500,
+              payment_id: payment.id,
+            })
 
             // Two concurrent refunds that each pass the guard in isolation
             // (500 captured, 0 refunded seen by both) but together refund 600.
             const outcomes = await promiseAll([
               service
                 .refundPayment({ amount: 300, payment_id: payment.id })
-                .then(() => "ok", () => "threw"),
+                .then(
+                  () => "ok",
+                  () => "threw"
+                ),
               service
                 .refundPayment({ amount: 300, payment_id: payment.id })
-                .then(() => "ok", () => "threw"),
+                .then(
+                  () => "ok",
+                  () => "threw"
+                ),
             ])
 
             // Exactly one refund is admitted; the other is rejected by the guard.
