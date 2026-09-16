@@ -610,19 +610,24 @@ export default class FulfillmentModuleService
       sharedContext
     )
 
+    const serializedFulfillment =
+      await this.baseRepository_.serialize<FulfillmentTypes.FulfillmentDTO>(
+        fulfillment
+      )
+
     const {
       items,
       data: fulfillmentData,
       provider_id,
       ...fulfillmentRest
-    } = fulfillment
+    } = serializedFulfillment
 
     try {
       const providerResult =
         await this.fulfillmentProviderService_.createFulfillment(
           provider_id!, // TODO: should we add a runtime check on provider_id being provided?
           fulfillmentData || {},
-          items.map((i) => i),
+          items,
           order,
           fulfillmentRest as unknown as Partial<FulfillmentDTO>,
           additional_data
@@ -688,12 +693,17 @@ export default class FulfillmentModuleService
       sharedContext
     )
 
+    const serializedFulfillment =
+      await this.baseRepository_.serialize<FulfillmentTypes.FulfillmentDTO>(
+        fulfillment
+      )
+
     try {
       const providerResult =
         await this.fulfillmentProviderService_.createReturn(
           fulfillment.provider_id!, // TODO: should we add a runtime check on provider_id being provided?,
           {
-            ...fulfillment,
+            ...serializedFulfillment,
             shipping_option: shippingOption,
           } as Record<any, any>
         )
