@@ -130,7 +130,7 @@ export class FetchError extends Error {
     cause?: unknown
   ) {
     const normalizedStatusText = statusText === "" ? undefined : statusText
-    super(message === "" ? normalizedStatusText ?? "Request failed" : message)
+    super(message === "" ? (normalizedStatusText ?? "Request failed") : message)
     this.name = "FetchError"
     this.statusText = normalizedStatusText
     this.status = status
@@ -153,6 +153,17 @@ export class FetchError extends Error {
     const suffix = this.status !== undefined ? ` (status ${this.status})` : ""
     return `${this.name}: ${this.message}${suffix}`
   }
+}
+
+/**
+ * Returns a one-line human-readable description of a fetch error,
+ * for example `404 Not Found: Product not found`.
+ */
+export function describeFetchError(err: FetchError): string {
+  const statusLabel = [err.status, err.statusText]
+    .filter((part) => part !== undefined)
+    .join(" ")
+  return statusLabel ? `${statusLabel}: ${err.message}` : err.message
 }
 
 /**
@@ -272,7 +283,7 @@ export class Client {
 
         yield* events(res, abortController.signal)
       })(),
-      abort: abortFunc
+      abort: abortFunc,
     }
   }
 
