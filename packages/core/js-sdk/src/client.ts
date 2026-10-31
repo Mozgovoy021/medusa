@@ -111,6 +111,11 @@ const normalizeResponse = async (resp: Response, reqHeaders: Headers) => {
 }
 
 /**
+ * The kind of failure a `FetchError` represents.
+ */
+export type FetchErrorKind = "client" | "server" | "network"
+
+/**
  * Error class for HTTP fetch operations that includes status information.
  * The `code` and `type` properties are filled in when the server's error body sends them.
  */
@@ -147,6 +152,17 @@ export class FetchError extends Error {
       return false
     }
     return this.status === 429 || (this.status >= 500 && this.status < 600)
+  }
+
+  /**
+   * The kind of failure: "server" for 5xx, "client" for any other status, and
+   * "network" when no response status is available.
+   */
+  get kind(): FetchErrorKind {
+    if (this.status === undefined) {
+      return "network"
+    }
+    return this.status >= 500 ? "server" : "client"
   }
 
   toString() {
