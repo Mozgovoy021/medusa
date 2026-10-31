@@ -117,12 +117,21 @@ const normalizeResponse = async (resp: Response, reqHeaders: Headers) => {
 export class FetchError extends Error {
   status: number | undefined
   statusText: string | undefined
+  cause?: unknown
 
-  constructor(message: string, statusText?: string, status?: number) {
+  constructor(
+    message: string,
+    statusText?: string,
+    status?: number,
+    cause?: unknown
+  ) {
     super(message)
     this.name = "FetchError"
     this.statusText = statusText === "" ? undefined : statusText
     this.status = status
+    if (cause !== undefined) {
+      this.cause = cause
+    }
   }
 
   toString() {
