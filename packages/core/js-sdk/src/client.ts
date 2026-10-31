@@ -145,6 +145,13 @@ export class FetchError extends Error {
 }
 
 /**
+ * Checks whether the given value is a `FetchError`.
+ */
+export function isFetchError(err: unknown): err is FetchError {
+  return err instanceof FetchError
+}
+
+/**
  * The main HTTP client for the Medusa JS SDK.
  */
 export class Client {
