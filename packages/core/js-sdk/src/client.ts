@@ -139,6 +139,16 @@ export class FetchError extends Error {
     }
   }
 
+  /**
+   * Whether the request can be retried: true for status 429 and 5xx.
+   */
+  get isRetryable(): boolean {
+    if (this.status === undefined) {
+      return false
+    }
+    return this.status === 429 || (this.status >= 500 && this.status < 600)
+  }
+
   toString() {
     const suffix = this.status !== undefined ? ` (status ${this.status})` : ""
     return `${this.name}: ${this.message}${suffix}`
