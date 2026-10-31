@@ -122,10 +122,6 @@ export class FetchError extends Error {
    * The number of seconds to wait before retrying, from the response's `Retry-After` header.
    */
   retryAfter?: number
-  /**
-   * The trace ID of the failed request, used to correlate it with server logs.
-   */
-  traceId?: string
 
   constructor(
     message: string,
