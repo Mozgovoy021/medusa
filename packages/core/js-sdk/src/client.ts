@@ -135,7 +135,7 @@ export class FetchError extends Error {
   ) {
     const normalizedStatusText = statusText === "" ? undefined : statusText
     super(message === "" ? normalizedStatusText ?? "Request failed" : message)
-    this.name = "FetchError"
+    this.name = FETCH_ERROR_NAME
     this.statusText = normalizedStatusText
     this.status = status
     if (cause !== undefined) {
