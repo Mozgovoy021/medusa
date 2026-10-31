@@ -124,6 +124,11 @@ export class FetchError extends Error {
     this.statusText = statusText
     this.status = status
   }
+
+  toString() {
+    const suffix = this.status !== undefined ? ` (status ${this.status})` : ""
+    return `${this.name}: ${this.message}${suffix}`
+  }
 }
 
 /**
