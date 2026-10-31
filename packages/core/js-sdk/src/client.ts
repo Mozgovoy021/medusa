@@ -149,6 +149,13 @@ export class FetchError extends Error {
     return this.status === 429 || (this.status >= 500 && this.status < 600)
   }
 
+  get isClientError(): boolean {
+    if (this.status === undefined) {
+      return false
+    }
+    return this.status >= 400 && this.status < 500
+  }
+
   toString() {
     const suffix = this.status !== undefined ? ` (status ${this.status})` : ""
     return `${this.name}: ${this.message}${suffix}`
