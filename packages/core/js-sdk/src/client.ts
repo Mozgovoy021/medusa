@@ -117,6 +117,8 @@ const normalizeResponse = async (resp: Response, reqHeaders: Headers) => {
 export class FetchError extends Error {
   status: number | undefined
   statusText: string | undefined
+  code?: string
+  type?: string
   cause?: unknown
   /**
    * The number of seconds to wait before retrying, from the response's `Retry-After` header.
@@ -141,6 +143,17 @@ export class FetchError extends Error {
   toString() {
     const suffix = this.status !== undefined ? ` (status ${this.status})` : ""
     return `${this.name}: ${this.message}${suffix}`
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      status: this.status,
+      statusText: this.statusText,
+      code: this.code,
+      type: this.type,
+    }
   }
 }
 
