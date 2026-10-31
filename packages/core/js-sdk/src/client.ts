@@ -156,6 +156,16 @@ export class FetchError extends Error {
     return this.status >= 400 && this.status < 500
   }
 
+  /**
+   * Whether the request failed with a server error: true for 5xx.
+   */
+  get isServerError(): boolean {
+    if (this.status === undefined) {
+      return false
+    }
+    return this.status >= 500 && this.status < 600
+  }
+
   toString() {
     const suffix = this.status !== undefined ? ` (status ${this.status})` : ""
     return `${this.name}: ${this.message}${suffix}`
