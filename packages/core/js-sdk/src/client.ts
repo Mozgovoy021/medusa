@@ -121,7 +121,7 @@ export class FetchError extends Error {
   constructor(message: string, statusText?: string, status?: number) {
     super(message)
     this.name = "FetchError"
-    this.statusText = statusText
+    this.statusText = statusText === "" ? undefined : statusText
     this.status = status
   }
 
