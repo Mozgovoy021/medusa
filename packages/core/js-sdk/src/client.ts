@@ -118,6 +118,10 @@ export class FetchError extends Error {
   status: number | undefined
   statusText: string | undefined
   cause?: unknown
+  /**
+   * The number of seconds to wait before retrying, from the response's `Retry-After` header.
+   */
+  retryAfter?: number
 
   constructor(
     message: string,
