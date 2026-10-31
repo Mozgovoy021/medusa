@@ -113,6 +113,15 @@ const normalizeResponse = async (resp: Response, reqHeaders: Headers) => {
 /**
  * Error class for HTTP fetch operations that includes status information.
  * The `code` and `type` properties are filled in when the server's error body sends them.
+ *
+ * @example
+ * try {
+ *   await sdk.store.product.list()
+ * } catch (err) {
+ *   if (err instanceof FetchError) {
+ *     console.log(err.status)
+ *   }
+ * }
  */
 export class FetchError extends Error {
   status: number | undefined
