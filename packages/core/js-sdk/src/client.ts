@@ -120,6 +120,7 @@ export class FetchError extends Error {
 
   constructor(message: string, statusText?: string, status?: number) {
     super(message)
+    this.name = "FetchError"
     this.statusText = statusText
     this.status = status
   }
