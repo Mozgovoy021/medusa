@@ -1,6 +1,7 @@
 /**
  * return the file path of the caller of the function calling this function
  * @param position
+ * @returns the caller file path, or null if position exceeds the stack trace limit
  */
 export function getCallerFilePath(position = 2) {
   if (position >= Error.stackTraceLimit) {
