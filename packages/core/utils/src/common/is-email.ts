@@ -8,6 +8,12 @@ const EMAIL_REGEX =
  * @param email - string to check
  */
 function isEmail(email: string) {
+  const localPart = email.slice(0, email.lastIndexOf("@"))
+
+  if (localPart.includes("..")) {
+    return null
+  }
+
   return email.toLowerCase().match(EMAIL_REGEX)
 }
 
