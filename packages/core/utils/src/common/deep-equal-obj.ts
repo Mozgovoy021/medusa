@@ -1,3 +1,4 @@
+/** Recursively compares two values for structural equality. */
 export function deepEqualObj(obj1: unknown, obj2: unknown): boolean {
   if (typeof obj1 !== typeof obj2) {
     return false
