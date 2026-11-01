@@ -8,13 +8,14 @@ const EMAIL_REGEX =
  * @param email - string to check
  */
 function isEmail(email: string) {
-  const localPart = email.slice(0, email.lastIndexOf("@"))
+  const trimmed = email.trim()
+  const localPart = trimmed.slice(0, trimmed.lastIndexOf("@"))
 
   if (localPart.includes("..")) {
     return null
   }
 
-  return email.toLowerCase().match(EMAIL_REGEX)
+  return trimmed.toLowerCase().match(EMAIL_REGEX)
 }
 
 /**
@@ -32,5 +33,5 @@ export function validateEmail(email: string): string {
     )
   }
 
-  return email.toLowerCase()
+  return email.trim().toLowerCase()
 }
