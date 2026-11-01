@@ -4,5 +4,7 @@
  * @param prefix
  */
 export function prefixArrayItems(array: string[], prefix: string): string[] {
-  return array.map((arrEl) => `${prefix}${arrEl}`)
+  return array
+    .filter((arrEl) => arrEl !== undefined)
+    .map((arrEl) => `${prefix}${arrEl}`)
 }
