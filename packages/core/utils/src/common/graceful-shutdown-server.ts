@@ -7,6 +7,7 @@ interface SocketState extends Socket {
   _connectionId: number
 }
 
+/** Wraps an HTTP server so it can drain open connections before shutting down. */
 export abstract class GracefulShutdownServer {
   public isShuttingDown: boolean
   public abstract shutdown(timeout?: number): Promise<void>
