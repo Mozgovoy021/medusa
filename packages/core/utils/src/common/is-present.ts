@@ -2,6 +2,7 @@ import { isDefined } from "./is-defined"
 import { isObject } from "./is-object"
 import { isString } from "./is-string"
 
+/** Returns whether the value is defined, non-null, and non-empty. */
 export function isPresent(value: any): boolean {
   if (!isDefined(value) || value === null) {
     return false
