@@ -15,8 +15,12 @@ type Relations = {
 }
 
 /** Convert a list of dot-notation select paths into a nested selects object. */
-export function buildSelects(selectCollection: string[]): Selects {
-  return buildRelationsOrSelect(selectCollection)
+export function buildSelects(
+  selectCollection: (string | undefined)[]
+): Selects {
+  return buildRelationsOrSelect(
+    selectCollection.filter((select): select is string => select !== undefined)
+  )
 }
 
 export function buildRelations(relationCollection: string[]): Relations {
