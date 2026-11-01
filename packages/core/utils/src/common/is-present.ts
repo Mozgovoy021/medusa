@@ -7,7 +7,11 @@ export function isPresent(value: any): boolean {
     return false
   }
 
-  if (isString(value) || Array.isArray(value)) {
+  if (isString(value)) {
+    return value.trim().length > 0
+  }
+
+  if (Array.isArray(value)) {
     return value.length > 0
   }
 

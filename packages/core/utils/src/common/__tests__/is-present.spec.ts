@@ -20,6 +20,10 @@ describe("isPresent", function () {
         output: false,
       },
       {
+        input: " \t\n ",
+        output: false,
+      },
+      {
         input: {},
         output: false,
       },
