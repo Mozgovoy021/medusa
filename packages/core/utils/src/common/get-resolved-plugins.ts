@@ -120,6 +120,7 @@ async function resolvePlugin(
   }
 }
 
+/** Resolves the plugins declared in the config module, including the project plugin. */
 export async function getResolvedPlugins(
   rootDirectory: string,
   configModule: ConfigModule,
