@@ -14,6 +14,7 @@ type Relations = {
   [key: string]: boolean | Relations
 }
 
+/** Convert a list of dot-notation select paths into a nested selects object. */
 export function buildSelects(selectCollection: string[]): Selects {
   return buildRelationsOrSelect(selectCollection)
 }
