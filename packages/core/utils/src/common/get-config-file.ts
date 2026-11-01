@@ -1,6 +1,7 @@
 import { join } from "path"
 import { dynamicImport } from "./dynamic-import"
 
+/** Loads a Medusa config file from a project root directory. */
 /**
  * Attempts to resolve the config file in a given root directory.
  * @param {string} rootDir - the directory to find the config file in.
