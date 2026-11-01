@@ -1,9 +1,7 @@
 import { join } from "path"
 import { writeFile, readFile } from "fs/promises"
 
-/**
- * Exposes the API to edit Env files
- */
+/** Exposes the API to edit Env files. */
 export class EnvEditor {
   #appRoot: string
   #files: {
