@@ -130,7 +130,9 @@ export class FetchError extends Error {
     status?: number,
     cause?: unknown
   ) {
-    const normalizedStatusText = statusText === "" ? undefined : statusText
+    const trimmedStatusText = statusText?.trim()
+    const normalizedStatusText =
+      trimmedStatusText === "" ? undefined : trimmedStatusText
     super(message === "" ? (normalizedStatusText ?? "Request failed") : message)
     this.name = "FetchError"
     this.statusText = normalizedStatusText
