@@ -15,4 +15,9 @@ describe("arrayIntersection", function () {
     const output = arrayIntersection(["bar", "baz"], ["baz", "bar"])
     expect(output).toEqual(["baz", "bar"])
   })
+
+  it("should return an empty array when either input is empty", function () {
+    expect(arrayIntersection([], ["foo", "bar"])).toEqual([])
+    expect(arrayIntersection(["foo", "bar"], [])).toEqual([])
+  })
 })
