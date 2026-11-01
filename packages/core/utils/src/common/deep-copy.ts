@@ -21,6 +21,10 @@ export function deepCopy<
     return cache.get(obj) as TOutput
   }
 
+  if (obj instanceof Date) {
+    return new Date(obj.getTime()) as unknown as TOutput
+  }
+
   let copy: TOutput
 
   // Handle arrays
