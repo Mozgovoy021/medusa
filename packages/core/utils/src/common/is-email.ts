@@ -8,7 +8,7 @@ const EMAIL_REGEX =
  * @param email - string to check
  */
 function isEmail(email: string) {
-  return email.toLowerCase().match(EMAIL_REGEX)
+  return email.trim().toLowerCase().match(EMAIL_REGEX)
 }
 
 /**
@@ -26,5 +26,5 @@ export function validateEmail(email: string): string {
     )
   }
 
-  return email.toLowerCase()
+  return email.trim().toLowerCase()
 }
