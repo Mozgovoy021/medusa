@@ -5,7 +5,8 @@ export function deepEqualObj(obj1: unknown, obj2: unknown): boolean {
   }
 
   if (typeof obj1 !== "object" || obj1 === null) {
-    return obj1 === obj2
+    // NaN !== NaN, so treat two NaN values as equal explicitly.
+    return obj1 === obj2 || (Number.isNaN(obj1) && Number.isNaN(obj2))
   }
 
   if (typeof obj2 !== "object" || obj2 === null) {
