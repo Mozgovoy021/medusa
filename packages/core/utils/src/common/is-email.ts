@@ -1,14 +1,14 @@
 import { MedusaError } from "./errors"
 
 const EMAIL_REGEX =
-  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i
 
 /**
  * Check whether provided string is an email.
  * @param email - string to check
  */
 function isEmail(email: string) {
-  return email.toLowerCase().match(EMAIL_REGEX)
+  return email.match(EMAIL_REGEX)
 }
 
 /**
