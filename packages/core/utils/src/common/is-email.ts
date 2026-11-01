@@ -35,3 +35,5 @@ export function validateEmail(email: string): string {
 
   return email.toLowerCase()
 }
+
+// Addresses longer than this are rejected.
