@@ -12,6 +12,7 @@ import { readDirRecursive } from "./read-dir-recursive"
 
 const { rm, stat, mkdir, access, readFile, writeFile } = promises
 
+/** Options for writing JSON files, extending Node write options with indentation. */
 export type JSONFileOptions = WriteFileOptions & {
   spaces?: number | string
   replacer?: (this: any, key: string, value: any) => any
