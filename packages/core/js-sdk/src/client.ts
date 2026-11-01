@@ -113,6 +113,7 @@ const normalizeResponse = async (resp: Response, reqHeaders: Headers) => {
 /**
  * Error class for HTTP fetch operations that includes status information.
  * The `code` and `type` properties are filled in when the server's error body sends them.
+ * The `status` property holds the HTTP status code of the failed response.
  */
 export class FetchError extends Error {
   status: number | undefined
