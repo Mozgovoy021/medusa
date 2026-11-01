@@ -47,4 +47,15 @@ describe("groupBy", function () {
 
     expect(response).toEqual({})
   })
+
+  it("should group items with a 0 key and skip nullish keys", function () {
+    const response = groupBy(
+      [{ rank: 0 }, { rank: 0 }, { rank: null }, { rank: undefined }],
+      "rank"
+    )
+
+    expect(mapToObject(response)).toEqual({
+      0: [{ rank: 0 }, { rank: 0 }],
+    })
+  })
 })

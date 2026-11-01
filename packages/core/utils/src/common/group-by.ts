@@ -5,7 +5,7 @@ export function groupBy(
   return array.reduce<Map<any, any>>((map, obj) => {
     const key = obj[attribute]
 
-    if (!key) {
+    if (key === undefined || key === null) {
       return map
     }
 
