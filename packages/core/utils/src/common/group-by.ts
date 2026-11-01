@@ -1,3 +1,4 @@
+/** Returns a Map of the array's items grouped by the given attribute's value, skipping items where it is null or undefined. */
 export function groupBy(
   array: Record<any, any>[],
   attribute: string | number
