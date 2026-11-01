@@ -23,6 +23,11 @@ export function deepCopy<
 
   let copy: TOutput
 
+  // Handle dates
+  if (obj instanceof Date) {
+    return new Date(obj.getTime()) as unknown as TOutput
+  }
+
   // Handle arrays
   if (Array.isArray(obj)) {
     copy = [] as unknown as TOutput
