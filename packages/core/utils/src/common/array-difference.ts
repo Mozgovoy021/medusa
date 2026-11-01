@@ -1,9 +1,13 @@
 type ArrayDifferenceElement = string | number
 
 export function arrayDifference<TElement = ArrayDifferenceElement>(
-  mainArray: TElement[],
+  mainArray: TElement[] | null | undefined,
   differingArray: TElement[]
 ): TElement[] {
+  if (!mainArray) {
+    return []
+  }
+
   const mainArraySet = new Set(mainArray)
   const differingArraySet = new Set(differingArray)
 
