@@ -17,6 +17,10 @@ export const PUBLISHABLE_KEY_HEADER = "x-publishable-api-key"
  * The storage key used for storing the locale in localStorage.
  */
 export const LOCALE_STORAGE_KEY = "medusa_locale"
+/**
+ * The name assigned to `FetchError` instances.
+ */
+export const FETCH_ERROR_NAME = "FetchError"
 
 // We want to explicitly retrieve the base URL instead of relying on relative paths that differ in behavior between browsers.
 const getBaseUrl = (passedBaseUrl: string) => {
