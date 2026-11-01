@@ -4,6 +4,10 @@ export function arrayIntersection<TElement = ArrayIntersectionElement>(
   firstArray: TElement[],
   secondArray: TElement[]
 ): TElement[] {
+  if (!firstArray.length || !secondArray.length) {
+    return []
+  }
+
   const firstArraySet = new Set(firstArray)
   const res = new Set<TElement>()
 
