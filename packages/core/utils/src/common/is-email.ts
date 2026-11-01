@@ -3,11 +3,18 @@ import { MedusaError } from "./errors"
 const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
+// RFC 5321 limits the forward path to 254 characters
+const MAX_EMAIL_LENGTH = 254
+
 /**
  * Check whether provided string is an email.
  * @param email - string to check
  */
 function isEmail(email: string) {
+  if (email.length > MAX_EMAIL_LENGTH) {
+    return null
+  }
+
   return email.toLowerCase().match(EMAIL_REGEX)
 }
 
