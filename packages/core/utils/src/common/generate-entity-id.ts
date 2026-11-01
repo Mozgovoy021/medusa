@@ -5,6 +5,7 @@ import { ulid } from "ulid"
  * @param idProperty
  * @param prefix
  */
+/** Returns the given id, or a new ULID-based id with an optional prefix. */
 export function generateEntityId(idProperty?: string, prefix?: string): string {
   if (idProperty) {
     return idProperty
