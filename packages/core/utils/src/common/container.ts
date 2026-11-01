@@ -1,3 +1,4 @@
+/** Keys under which core dependencies are registered in the Medusa container. */
 export const ContainerRegistrationKeys = {
   PG_CONNECTION: "__pg_connection__",
   MANAGER: "manager",
