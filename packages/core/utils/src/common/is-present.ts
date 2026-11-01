@@ -11,6 +11,10 @@ export function isPresent(value: any): boolean {
     return value.trim().length > 0
   }
 
+  if (value instanceof Date) {
+    return !isNaN(value.getTime())
+  }
+
   if (Array.isArray(value)) {
     return value.some((item) => isPresent(item))
   }
