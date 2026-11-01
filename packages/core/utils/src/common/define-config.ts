@@ -75,6 +75,7 @@ export function defineConfig(config?: InputConfigWithArrayModules): ConfigModule
 export function defineConfig(
   config?: InputConfigWithObjectModules
 ): ConfigModule
+/** Implementation shared by both `defineConfig` overloads. */
 export function defineConfig(config: InputConfig = {}): ConfigModule {
   const options = {
     isCloud: process.env.EXECUTION_CONTEXT === MEDUSA_CLOUD_EXECUTION_CONTEXT,
