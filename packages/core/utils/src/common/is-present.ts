@@ -7,8 +7,12 @@ export function isPresent(value: any): boolean {
     return false
   }
 
-  if (isString(value) || Array.isArray(value)) {
-    return value.length > 0
+  if (isString(value)) {
+    return value.trim().length > 0
+  }
+
+  if (Array.isArray(value)) {
+    return value.some((item) => isPresent(item))
   }
 
   if (value instanceof Map || value instanceof Set) {

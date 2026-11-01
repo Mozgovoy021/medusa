@@ -22,4 +22,13 @@ describe("validateEmail", () => {
       expect(e.message).toBe("The email is not valid")
     }
   })
+
+  it("throws on consecutive dots in the local part", () => {
+    expect(() => validateEmail("test..test@email.com")).toThrow(
+      "The email is not valid"
+    )
+    expect(() => validateEmail('x"test..test"@email.com')).toThrow(
+      "The email is not valid"
+    )
+  })
 })

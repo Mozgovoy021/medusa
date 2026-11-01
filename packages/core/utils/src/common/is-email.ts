@@ -8,7 +8,14 @@ const EMAIL_REGEX =
  * @param email - string to check
  */
 function isEmail(email: string) {
-  return email.trim().toLowerCase().match(EMAIL_REGEX)
+  const trimmed = email.trim()
+  const localPart = trimmed.slice(0, trimmed.lastIndexOf("@"))
+
+  if (localPart.includes("..")) {
+    return null
+  }
+
+  return trimmed.toLowerCase().match(EMAIL_REGEX)
 }
 
 /**
