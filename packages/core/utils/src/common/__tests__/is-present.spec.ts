@@ -40,6 +40,14 @@ describe("isPresent", function () {
         output: true,
       },
       {
+        input: ["", "  ", null],
+        output: false,
+      },
+      {
+        input: ["", "test"],
+        output: true,
+      },
+      {
         input: new Map([["test", "test"]]),
         output: true,
       },

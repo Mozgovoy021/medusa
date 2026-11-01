@@ -12,7 +12,7 @@ export function isPresent(value: any): boolean {
   }
 
   if (Array.isArray(value)) {
-    return value.length > 0
+    return value.some((item) => isPresent(item))
   }
 
   if (value instanceof Map || value instanceof Set) {
