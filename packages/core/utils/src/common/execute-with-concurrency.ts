@@ -1,5 +1,6 @@
 import { promiseAll } from "./promise-all"
 
+/** Runs async functions while capping how many run at once. */
 /**
  * Execute functions with a concurrency limit
  * @param functions Array of functions to execute in parallel
