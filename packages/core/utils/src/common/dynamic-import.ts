@@ -2,6 +2,8 @@ import { isFileDisabled, MEDUSA_SKIP_FILE } from "./define-file-config"
 import { resolveExports } from "./resolve-exports"
 
 /**
+ * Dynamically imports a module by path and resolves its exports.
+ *
  * Utility that should be used instead of either await import() or require()
  * to avoid bundling issues. That way we have a single place
  * where we manage the strategy to dynamically import a module.
