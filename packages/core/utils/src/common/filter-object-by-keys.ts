@@ -25,6 +25,7 @@ import { isDefined } from "./is-defined"
     }
   }
 */
+/** Returns a copy of `obj` containing only the given dot-notation `paths`. */
 export function filterObjectByKeys(obj, paths) {
   function buildObject(paths) {
     const result = {}
