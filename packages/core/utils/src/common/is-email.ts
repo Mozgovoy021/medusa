@@ -10,7 +10,7 @@ const EMAIL_REGEX =
 function isEmail(email: string) {
   const localPart = email.slice(0, email.lastIndexOf("@"))
 
-  if (localPart.includes("..")) {
+  if (localPart.startsWith(".") || localPart.includes("..")) {
     return null
   }
 
