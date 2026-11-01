@@ -1,6 +1,7 @@
 import { camelToSnakeCase } from "./camel-to-snake-case"
 import { simpleHash } from "./simple-hash"
 
+/** Compresses a name to fit within the given length limit, appending a hash when truncated. */
 export function compressName(name: string, limit = 58) {
   if (name.length <= limit) {
     return name.toLowerCase()
