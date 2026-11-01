@@ -123,12 +123,17 @@ export class FetchError extends Error {
    * The number of seconds to wait before retrying, from the response's `Retry-After` header.
    */
   retryAfter?: number
+  /**
+   * The response's headers.
+   */
+  headers?: Record<string, string>
 
   constructor(
     message: string,
     statusText?: string,
     status?: number,
-    cause?: unknown
+    cause?: unknown,
+    headers?: Record<string, string>
   ) {
     const normalizedStatusText = statusText === "" ? undefined : statusText
     super(message === "" ? (normalizedStatusText ?? "Request failed") : message)
@@ -137,6 +142,9 @@ export class FetchError extends Error {
     this.status = status
     if (cause !== undefined) {
       this.cause = cause
+    }
+    if (headers !== undefined) {
+      this.headers = headers
     }
   }
 
