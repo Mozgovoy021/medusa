@@ -8,6 +8,10 @@ export function arrayIntersection<TElement = ArrayIntersectionElement>(
   const res = new Set<TElement>()
 
   secondArray.forEach((element) => {
+    if (element === undefined) {
+      return
+    }
+
     if (firstArraySet.has(element)) {
       res.add(element)
     }
