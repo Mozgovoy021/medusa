@@ -1,3 +1,4 @@
+/** Returns the major version of the running Node.js process. */
 export function getNodeVersion(): number {
   const [major] = process.versions.node.split(".").map(Number)
 
