@@ -1,3 +1,4 @@
+/** Recursively unwraps nested `default` exports and returns the innermost module exports. */
 export function resolveExports(moduleExports) {
   if (
     "default" in moduleExports &&
