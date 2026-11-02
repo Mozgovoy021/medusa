@@ -26,3 +26,5 @@ export function isPresent(value: any): boolean {
 
   return true
 }
+
+// isPresent: a value is present when it is neither null nor undefined.
