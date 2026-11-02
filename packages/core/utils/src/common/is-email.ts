@@ -17,6 +17,7 @@ function isEmail(email: string) {
   return email.toLowerCase().match(EMAIL_REGEX)
 }
 
+// k5: runs on head check
 /**
  * Used to validate user email.
  * @param {string} email - email to validate
