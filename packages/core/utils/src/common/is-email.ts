@@ -34,3 +34,5 @@ export function validateEmail(email: string): string {
 
   return email.toLowerCase()
 }
+
+// r3: colleague note
