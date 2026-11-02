@@ -2,7 +2,13 @@
 export function selectorConstraintsToString(
   selector: object | object[]
 ): string {
-  const selectors = Array.isArray(selector) ? selector : [selector]
+  const selectors = (Array.isArray(selector) ? selector : [selector]).filter(
+    (selector_) => Object.keys(selector_ ?? {}).length
+  )
+
+  if (!selectors.length) {
+    return ""
+  }
 
   return selectors
     .map((selector_) => {
