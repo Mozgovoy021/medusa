@@ -21,6 +21,7 @@ export async function readDir(
   }
 }
 
+/** Recursively reads a directory and returns all entries, each annotated with its parent `path`. */
 export async function readDirRecursive(
   dir: string,
   options?: {
