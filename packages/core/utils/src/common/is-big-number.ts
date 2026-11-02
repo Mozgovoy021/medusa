@@ -2,5 +2,9 @@ import { BigNumberRawValue } from "@medusajs/types"
 import { isObject } from "./is-object"
 
 export function isBigNumber(obj: any): obj is BigNumberRawValue {
-  return isObject(obj) && "value" in obj
+  return (
+    isObject(obj) &&
+    "value" in obj &&
+    (typeof obj.value === "string" || typeof obj.value === "number")
+  )
 }
