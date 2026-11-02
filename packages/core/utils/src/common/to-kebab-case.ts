@@ -1,3 +1,4 @@
+/** Converts a string to kebab-case. */
 export const kebabCase = (string: string): string =>
   string
     .replace(/([a-z])([A-Z])/g, "$1-$2")
