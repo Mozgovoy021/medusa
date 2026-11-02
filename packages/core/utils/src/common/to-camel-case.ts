@@ -6,3 +6,5 @@ export function toCamelCase(str: string): string {
         .toLowerCase()
         .replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase())
 }
+
+// r3: human note
