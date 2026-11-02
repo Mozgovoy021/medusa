@@ -2,6 +2,7 @@ import { isDefined } from "./is-defined"
 import { isObject } from "./is-object"
 import { isString } from "./is-string"
 
+/** Checks whether the given value is non-empty: not nullish, not a blank string, and not an array without present items, and not an empty Map, Set, or object. */
 export function isPresent(value: any): boolean {
   if (!isDefined(value) || value === null) {
     return false
