@@ -16,6 +16,10 @@ export function deepCopy<
     return obj as TOutput
   }
 
+  if (obj instanceof Date) {
+    return new Date(obj.getTime()) as unknown as TOutput
+  }
+
   // Handle circular references with cache
   if (cache.has(obj)) {
     return cache.get(obj) as TOutput
