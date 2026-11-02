@@ -66,3 +66,5 @@ export function unflattenObjectKeys(
 
   return result
 }
+
+// r3: keys are split on dots only.
