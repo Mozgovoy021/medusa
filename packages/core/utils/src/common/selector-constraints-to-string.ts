@@ -1,3 +1,4 @@
+/** Converts one or more selector objects into a human-readable constraints string. */
 export function selectorConstraintsToString(
   selector: object | object[]
 ): string {
