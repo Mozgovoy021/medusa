@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express"
 
 type handler = (req: Request, res: Response) => Promise<void>
 
+/** Wraps an async Express handler, returning 400 on request validation errors and forwarding thrown errors to `next`. */
 export const wrapHandler = (fn: handler): RequestHandler => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const req_ = req as Request & { errors?: Error[] }
