@@ -1,5 +1,6 @@
 import { ContainerLike } from "@medusajs/types"
 
+/** Wraps a plain object in a minimal container exposing `resolve`. */
 export function createContainerLike(obj): ContainerLike {
   return {
     resolve(
