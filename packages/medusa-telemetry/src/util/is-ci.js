@@ -16,6 +16,7 @@ const CI_DEFINITIONS = [
   envFromCIWithNoName,
 ]
 
+/** Returns the name of the first matching CI definition, or null when none match. */
 function lookupCI() {
   for (const fn of CI_DEFINITIONS) {
     try {
