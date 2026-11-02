@@ -11,6 +11,9 @@ export function tryConvertToNumber<T>(
   value: unknown,
   defaultValue?: T
 ): number | undefined | T {
+  if (value === "") {
+    return undefined
+  }
   const transformedValue = Number(value)
   return Number.isNaN(transformedValue)
     ? defaultValue ?? undefined
