@@ -9,6 +9,11 @@ describe("validateEmail", () => {
     )
   })
 
+  it("trims surrounding whitespace before validating", () => {
+    expect(validateEmail("  test@email.com\n")).toBe("test@email.com")
+    expect(validateEmail("\tTest@Email.com ")).toBe("test@email.com")
+  })
+
   it("throws on an invalidates email", () => {
     expect.assertions(1)
 
