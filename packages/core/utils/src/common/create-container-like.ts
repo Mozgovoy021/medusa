@@ -1,5 +1,6 @@
 import { ContainerLike } from "@medusajs/types"
 
+/** Wraps a plain object in a container-like interface whose `resolve` method returns the value stored under the given key. */
 export function createContainerLike(obj): ContainerLike {
   return {
     resolve(
