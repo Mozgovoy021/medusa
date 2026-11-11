@@ -12,7 +12,7 @@ export function tryConvertToNumber<T>(
   defaultValue?: T
 ): number | undefined | T {
   const transformedValue = Number(value)
-  return Number.isNaN(transformedValue)
+  return typeof value === "boolean" || Number.isNaN(transformedValue)
     ? defaultValue ?? undefined
     : transformedValue
 }
