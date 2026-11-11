@@ -1,4 +1,4 @@
-/** A value counts as a date when it is not null and `new Date(value)` yields a valid time (Date objects, timestamps, and parseable date strings). */
+/** Checks whether a value is a non-null, non-boolean input that `new Date(value)` parses into a valid time (acc561). */
 export function isDate(value: any): value is Date {
   return (
     value !== null &&
