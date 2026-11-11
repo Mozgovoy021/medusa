@@ -1,7 +1,10 @@
 /**
  * Converts a string to snake_case
  */
-export function toSnakeCase(str: string): string {
+export function toSnakeCase(str: string | null | undefined): string {
+  if (!str) {
+    return ""
+  }
   return str
     .replace(/([a-z])([A-Z])/g, "$1_$2")
     .replace(/[^a-zA-Z0-9]+/g, "_")
