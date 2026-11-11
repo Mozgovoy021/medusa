@@ -20,6 +20,10 @@ export function isPresent(value: any): boolean {
     return value.size > 0
   }
 
+  if (value instanceof Date) {
+    return !isNaN(value.getTime())
+  }
+
   if (isObject(value)) {
     return Object.keys(value).length > 0
   }
