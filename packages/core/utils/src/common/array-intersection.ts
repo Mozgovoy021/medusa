@@ -2,9 +2,13 @@ type ArrayIntersectionElement = string | number
 
 /** Returns the unique, defined elements that appear in both arrays. */
 export function arrayIntersection<TElement = ArrayIntersectionElement>(
-  firstArray: TElement[],
-  secondArray: TElement[]
+  firstArray: TElement[] | null | undefined,
+  secondArray: TElement[] | null | undefined
 ): TElement[] {
+  if (!firstArray?.length || !secondArray?.length) {
+    return []
+  }
+
   const firstArraySet = new Set(firstArray)
   const res = new Set<TElement>()
 
