@@ -2,13 +2,13 @@ type ArrayDifferenceElement = string | number
 
 /**
  * Returns the unique, defined elements of `mainArray` that are not in `differingArray`.
- * A `null` or `undefined` `mainArray` gives an empty array.
+ * A `null`, `undefined` or empty `mainArray` gives an empty array.
  */
 export function arrayDifference<TElement = ArrayDifferenceElement>(
   mainArray: TElement[] | null | undefined,
   differingArray: TElement[]
 ): TElement[] {
-  if (!mainArray) {
+  if (!mainArray?.length) {
     return []
   }
 
