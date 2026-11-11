@@ -5,3 +5,4 @@ export function isDefined<T = undefined | unknown>(
   return typeof val !== "undefined"
 }
 // note acc284: undefined is the only value that is not defined
+// note acc484: undefined is the only value that is not defined
