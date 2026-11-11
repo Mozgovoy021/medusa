@@ -8,6 +8,10 @@ export function compressName(
   name: string,
   limit = DEFAULT_COMPRESS_NAME_LIMIT
 ) {
+  if (!name) {
+    return ""
+  }
+
   if (name.length <= limit) {
     return name.toLowerCase()
   }
