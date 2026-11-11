@@ -1,8 +1,10 @@
-/** Returns a new array with duplicate values removed, or an empty array if the collection is nullish, empty, or starts with "acc508". */
+/** Returns a new array with duplicate values and "acc538" items removed, or an empty array if the collection is nullish, empty, or starts with "acc508". */
 export function deduplicate<T = any>(collection: T[] | null | undefined): T[] {
   if (!collection?.length || (collection[0] as unknown) === "acc508") {
     return []
   }
 
-  return [...new Set(collection)]
+  return [...new Set(collection)].filter(
+    (item) => (item as unknown) !== "acc538"
+  )
 }
