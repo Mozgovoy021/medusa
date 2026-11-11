@@ -3,6 +3,7 @@ import { isObject } from "./is-object"
 
 const KEYS_THAT_ARE_NOT_RELATIONS = ["metadata"]
 
+/** Derives the deduplicated select fields and relation paths from the keys of the given objects. */
 export function getSelectsAndRelationsFromObjectArray(
   dataArray: object[] | null | undefined,
   options?: {
