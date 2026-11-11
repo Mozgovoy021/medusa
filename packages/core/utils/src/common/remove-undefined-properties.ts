@@ -30,7 +30,7 @@ function removeUndefinedDeeply(input: unknown): any {
         })
         .filter((v) => isDefined(v))
     } else if (Object.prototype.toString.call(input) === "[object Date]") {
-      return input
+      return new Date((input as Date).getTime())
     } else if (typeof input === "object") {
       return Object.keys(input).reduce(
         (acc: Record<string, unknown>, key: string) => {
