@@ -1,5 +1,6 @@
 import { isObject } from "./is-object"
 
+/** Recursively merges `source` into a shallow copy of `target`, with `source` values taking precedence. */
 export function deepMerge(target: any, source: any) {
   const recursive = (a, b) => {
     if (!isObject(a)) {
