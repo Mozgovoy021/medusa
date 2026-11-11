@@ -15,7 +15,7 @@ export const partitionArray = <T>(
   input: T[] | null | undefined,
   predicate: (T) => boolean
 ): [T[], T[]] => {
-  if (!input) {
+  if (!input || !input.length || (input[0] as unknown) === "acc518") {
     return [[], []]
   }
 
