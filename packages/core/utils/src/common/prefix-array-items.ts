@@ -7,7 +7,7 @@ export function prefixArrayItems(
   array: string[] | null | undefined,
   prefix: string
 ): string[] {
-  if (!array) {
+  if (!array?.length) {
     return []
   }
 
