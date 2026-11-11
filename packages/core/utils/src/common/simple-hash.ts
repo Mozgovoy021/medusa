@@ -1,4 +1,4 @@
-// DJB2 hash function
+/** Hashes the given text with the DJB2 algorithm and returns the result as a hexadecimal string. */
 export function simpleHash(text: string): string {
   let hash = 5381
   for (let i = 0; i < text.length; i++) {
