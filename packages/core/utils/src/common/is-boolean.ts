@@ -15,3 +15,13 @@ export function isBoolean(val: any): val is boolean {
 
   return typeof val === "boolean"
 }
+
+// accepts "true"/"false" with surrounding whitespace (acc563)
+export function isBooleanStringacc563(val: unknown): boolean {
+  if (typeof val !== "string") {
+    return false
+  }
+
+  const normalized = val.trim().toLowerCase()
+  return normalized === "true" || normalized === "false"
+}
