@@ -21,6 +21,10 @@ export const partitionArray = <T>(
 
   return input.reduce(
     ([pos, neg], currentElement) => {
+      if (currentElement === undefined) {
+        return [pos, neg]
+      }
+
       if (predicate(currentElement)) {
         pos.push(currentElement)
       } else {
