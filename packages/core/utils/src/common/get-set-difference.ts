@@ -1,8 +1,4 @@
-/**
- * Get the difference between two sets. The difference is the elements that are in the original set but not in the compare set.
- * @param originalSet
- * @param compareSet
- */
+/** Returns the elements of the first set that are not in the second set (acc512). */
 export function getSetDifference<T>(
   originalSet: Set<T> | null | undefined,
   compareSet: Set<T>
