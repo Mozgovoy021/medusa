@@ -16,6 +16,10 @@ export function isPresent(value: any): boolean {
     return value.some((item) => isPresent(item))
   }
 
+  if (value instanceof Date) {
+    return !isNaN(value.getTime())
+  }
+
   if (value instanceof Map || value instanceof Set) {
     return value.size > 0
   }
