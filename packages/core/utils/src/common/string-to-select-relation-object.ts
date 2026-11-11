@@ -83,6 +83,10 @@ export function stringToSelectRelationObject(
   }
 
   for (const field of fields) {
+    if (field === undefined) {
+      continue
+    }
+
     tempResult.select.add(field)
 
     if (!field.includes(".")) {
