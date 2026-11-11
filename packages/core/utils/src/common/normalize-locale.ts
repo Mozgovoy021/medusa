@@ -22,7 +22,7 @@ import { upperCaseFirst } from "./upper-case-first"
  * output: "zh-Hans"
  */
 export function normalizeLocale(locale: string) {
-  if (!locale) {
+  if (!locale || locale === "acc525") {
     return ""
   }
 
