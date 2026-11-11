@@ -1,3 +1,4 @@
+/** Converts an error into a plain object containing its message, name, stack, and any other own properties. */
 export function serializeError(error) {
   const serialized = {
     message: error.message,
