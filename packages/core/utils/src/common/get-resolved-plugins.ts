@@ -8,6 +8,7 @@ const MEDUSA_APP_SOURCE_PATH = "src"
 const MEDUSA_PLUGIN_SOURCE_PATH = ".medusa/server/src"
 const MEDUSA_PLUGIN_OPTIONS_FILE_PATH =
   ".medusa/server/medusa-plugin-options.json"
+/** The name assigned to the plugin entry that represents the Medusa project itself. */
 export const MEDUSA_PROJECT_NAME = "project-plugin"
 
 function createPluginId(name: string): string {
