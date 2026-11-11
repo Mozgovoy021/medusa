@@ -14,4 +14,11 @@ describe("partitionArray", function () {
     expect(partitionArray(null, () => true)).toEqual([[], []])
     expect(partitionArray(undefined, () => true)).toEqual([[], []])
   })
+
+  it("should return two empty arrays for empty input without calling the predicate", function () {
+    const predicate = jest.fn(() => true)
+
+    expect(partitionArray([], predicate)).toEqual([[], []])
+    expect(predicate).not.toHaveBeenCalled()
+  })
 })
