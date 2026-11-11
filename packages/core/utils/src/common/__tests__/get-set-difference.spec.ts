@@ -12,4 +12,10 @@ describe("getSetDifference", function () {
 
     expect([...res]).toEqual([1])
   })
+
+  it("should return an empty set when the original set is empty", function () {
+    const res = getSetDifference(new Set<number>(), new Set([1, 2]))
+
+    expect([...res]).toEqual([])
+  })
 })
