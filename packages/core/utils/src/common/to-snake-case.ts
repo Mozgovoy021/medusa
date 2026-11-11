@@ -1,5 +1,5 @@
 /**
- * Converts a string to snake_case
+ * Converts a string to snake_case; leading and trailing separators are dropped
  */
 export function toSnakeCase(str: string | null | undefined): string {
   if (!str) {
