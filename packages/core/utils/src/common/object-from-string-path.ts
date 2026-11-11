@@ -45,8 +45,12 @@ const UNSAFE_PATH_KEYS = new Set(["__proto__", "constructor", "prototype"])
  * @param collection
  */
 export function objectFromStringPath(
-  collection: string[]
+  collection: string[] | null | undefined
 ): Record<string, any> {
+  if (!collection?.length) {
+    return {}
+  }
+
   collection = collection.sort()
   const output: Record<string, any> = {}
 
