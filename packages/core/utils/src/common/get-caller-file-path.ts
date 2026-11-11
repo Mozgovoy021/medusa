@@ -1,8 +1,12 @@
+export const DEFAULT_CALLER_FILE_PATH_POSITION = 2
+
 /**
  * return the file path of the caller of the function calling this function
  * @param position
  */
-export function getCallerFilePath(position = 2) {
+export function getCallerFilePath(
+  position = DEFAULT_CALLER_FILE_PATH_POSITION
+) {
   if (position >= Error.stackTraceLimit) {
     return null
   }
