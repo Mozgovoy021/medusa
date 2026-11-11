@@ -48,6 +48,7 @@ export function mapObjectTo<
       }
 
       newObject[config.mapTo] = object[key]
+        .filter((obj: any) => obj !== undefined)
         .map((obj: any) => obj[config.valueFrom])
         .filter(Boolean)
     })
