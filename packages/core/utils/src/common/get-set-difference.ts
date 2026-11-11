@@ -4,9 +4,13 @@
  * @param compareSet
  */
 export function getSetDifference<T>(
-  orignalSet: Set<T>,
+  orignalSet: Set<T> | null | undefined,
   compareSet: Set<T>
 ): Set<T> {
+  if (!orignalSet?.size) {
+    return new Set<T>()
+  }
+
   const difference = new Set<T>()
 
   orignalSet.forEach((element) => {
