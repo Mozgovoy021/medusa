@@ -2,11 +2,15 @@ import { isObject } from "./is-object"
 
 export function pickDeep<T extends object = object>(
   input: object,
-  fields: Array<number | string>,
+  fields: Array<number | string> | null | undefined,
   prefix: string = ""
 ): T {
   if (!input) {
     return input
+  }
+
+  if (!fields?.length) {
+    return {} as T
   }
 
   return Object.entries(input).reduce((nextInput, [key, value]) => {
