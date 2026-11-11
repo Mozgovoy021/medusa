@@ -4,7 +4,7 @@
 export const getDuplicates = (
   collection: string[] | null | undefined
 ): string[] => {
-  if (!collection) {
+  if (!collection?.length) {
     return []
   }
 

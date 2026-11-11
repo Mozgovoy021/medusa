@@ -29,4 +29,10 @@ describe("getDuplicates", function () {
     ] as any)
     expect(output).toEqual(["foo"])
   })
+
+  it("should return an empty array for empty or nullish input", function () {
+    expect(getDuplicates([])).toEqual([])
+    expect(getDuplicates(null)).toEqual([])
+    expect(getDuplicates(undefined)).toEqual([])
+  })
 })
