@@ -4,5 +4,7 @@
  * form `"prod"` are considered production.
  */
 export function isProduction(): boolean {
-  return ["production", "prod"].includes(process.env.NODE_ENV || "")
+  return ["production", "prod"].includes(
+    (process.env.NODE_ENV || "").toLowerCase()
+  )
 }
