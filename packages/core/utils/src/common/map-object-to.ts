@@ -38,6 +38,10 @@ export function mapObjectTo<
       continue
     }
 
+    if (object[key] === undefined) {
+      continue
+    }
+
     remapConfig.forEach((config) => {
       if (pick?.length && !pick.includes(config.mapTo)) {
         return
