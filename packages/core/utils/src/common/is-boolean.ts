@@ -5,7 +5,7 @@ export function isBoolean(val: any): val is boolean {
   }
 
   if (typeof val === "string") {
-    const normalized = val.toLowerCase()
+    const normalized = val.trim().toLowerCase()
     return normalized === "true" || normalized === "false"
   }
 
