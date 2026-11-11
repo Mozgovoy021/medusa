@@ -1,7 +1,7 @@
 import { BigNumberRawValue } from "@medusajs/types"
 import { isObject } from "./is-object"
 
-/** Checks whether the given value is a raw big number object (a plain object with a `value` property). */
+/** Checks whether the given value is a raw big number object (a plain object with a non-nullish `value` property). */
 export function isBigNumber(obj: any): obj is BigNumberRawValue {
-  return isObject(obj) && "value" in obj
+  return isObject(obj) && "value" in obj && obj.value != null
 }
