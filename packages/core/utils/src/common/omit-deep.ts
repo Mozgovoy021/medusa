@@ -1,5 +1,6 @@
 import { isObject } from "./is-object"
 
+/** Recursively removes the given keys from an object, including objects nested in arrays (acc526). */
 export function omitDeep<T extends object = object>(
   input: object,
   excludes: Array<number | string>
