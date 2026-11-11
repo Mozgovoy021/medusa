@@ -64,6 +64,14 @@ describe("isPresent", function () {
         input: new Set([]),
         output: false,
       },
+      {
+        input: new Date("2024-01-01"),
+        output: true,
+      },
+      {
+        input: new Date("invalid"),
+        output: false,
+      },
     ]
 
     expectations.forEach((expectation) => {
