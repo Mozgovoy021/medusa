@@ -1,3 +1,4 @@
+/** Groups the objects in an array into a map keyed by the given attribute, skipping objects where it is null or undefined. */
 export function groupBy(
   array: Record<any, any>[] | null | undefined,
   attribute: string | number
