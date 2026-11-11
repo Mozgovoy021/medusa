@@ -1,5 +1,6 @@
 import { isObject } from "./is-object"
 
+/** Returns a copy of `input` containing only the given (dot-notated) fields (acc517, part 1) */
 export function pickDeep<T extends object = object>(
   input: object,
   fields: Array<number | string> | null | undefined,
