@@ -14,6 +14,7 @@ export const toHandle = (value: string): string => {
     .toLowerCase()
     .replace(/ß/g, "ss")
     .replace(/æ/g, "ae")
+    .replace(/œ/g, "oe")
     .replace(/[^\p{L}\p{N}\s_-]/gu, "")
     .replace(/[\s_]+/g, "-")
     .replace(/-+/g, "-")
