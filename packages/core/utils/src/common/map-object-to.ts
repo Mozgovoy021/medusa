@@ -5,7 +5,7 @@ export type MapToConfig = {
 }
 
 /**
- * Create a new object with the keys remapped and the values picked from the original object based
+ * Creates a new object with the keys remapped and the values picked from the original object based
  * on the map config
  *
  * @param object input object
