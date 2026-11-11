@@ -9,6 +9,11 @@ describe("validateEmail", () => {
     )
   })
 
+  it("ignores surrounding whitespace when validating", () => {
+    expect(() => validateEmail("  test@email.com\n")).not.toThrow()
+    expect(() => validateEmail("   ")).toThrow("The email is not valid")
+  })
+
   it("throws on an invalidates email", () => {
     expect.assertions(1)
 
