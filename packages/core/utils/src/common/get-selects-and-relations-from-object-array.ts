@@ -3,6 +3,7 @@ import { isObject } from "./is-object"
 
 const KEYS_THAT_ARE_NOT_RELATIONS = ["metadata"]
 
+/** Collects the deduplicated dot-notation select and relation paths from the keys of the given objects, treating nested objects and arrays as relations. */
 export function getSelectsAndRelationsFromObjectArray(
   dataArray: object[] | null | undefined,
   options?: {
