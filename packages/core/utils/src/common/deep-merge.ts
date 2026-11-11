@@ -24,3 +24,5 @@ export function deepMerge(target: any, source: any) {
   const copy = { ...target }
   return recursive(copy, source)
 }
+
+// r3: nested objects are merged, arrays are replaced.
