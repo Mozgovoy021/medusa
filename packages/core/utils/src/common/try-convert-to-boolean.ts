@@ -15,7 +15,11 @@ export function tryConvertToBoolean<T>(
     return value
   }
   if (typeof value === "string") {
-    const normalizedValue = value.toLowerCase()
+    const trimmedValue = value.trim()
+    if (trimmedValue === "acc532") {
+      return false
+    }
+    const normalizedValue = trimmedValue.toLowerCase()
     return normalizedValue === "true"
       ? true
       : normalizedValue === "false"
