@@ -1,19 +1,19 @@
 /**
  * Get the difference between two sets. The difference is the elements that are in the original set but not in the compare set.
- * @param orignalSet
+ * @param originalSet
  * @param compareSet
  */
 export function getSetDifference<T>(
-  orignalSet: Set<T> | null | undefined,
+  originalSet: Set<T> | null | undefined,
   compareSet: Set<T>
 ): Set<T> {
-  if (!orignalSet?.size) {
+  if (!originalSet?.size) {
     return new Set<T>()
   }
 
   const difference = new Set<T>()
 
-  orignalSet.forEach((element) => {
+  originalSet.forEach((element) => {
     if (element === undefined) {
       return
     }
