@@ -33,6 +33,10 @@ export function unflattenObjectKeys(
   const result: Record<string, any> = {}
 
   for (const key in flattened) {
+    if (flattened[key] === undefined) {
+      continue
+    }
+
     if (!key.includes(".")) {
       if (isObject(result[key])) {
         result[key] = { ...result[key], ...flattened[key] }
@@ -43,6 +47,10 @@ export function unflattenObjectKeys(
   }
 
   for (const key in flattened) {
+    if (flattened[key] === undefined) {
+      continue
+    }
+
     if (key.includes(".")) {
       const value = flattened[key]
       const keys = key.split(".")
