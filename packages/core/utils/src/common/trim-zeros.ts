@@ -1,3 +1,4 @@
+/** Removes trailing zeros from the fractional part of a numeric string, preserving any exponent suffix. */
 export function trimZeros(value: string) {
   const [whole, fraction] = value.split(".")
 
