@@ -1,6 +1,7 @@
 import { isDate } from "./is-date"
 import { MedusaError } from "./errors"
 
+/** Converts the given date or date string to an ISO 8601 string, throwing if it is not a valid date. */
 export const GetIsoStringFromDate = (date: Date | string) => {
   if (!isDate(date)) {
     throw new MedusaError(
