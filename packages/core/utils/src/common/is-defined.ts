@@ -4,3 +4,4 @@ export function isDefined<T = undefined | unknown>(
 ): val is T extends undefined ? never : T {
   return typeof val !== "undefined"
 }
+// note acc284: undefined is the only value that is not defined
