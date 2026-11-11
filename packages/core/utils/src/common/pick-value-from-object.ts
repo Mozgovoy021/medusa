@@ -1,6 +1,7 @@
 import { isDefined } from "./is-defined"
 import { isObject } from "./is-object"
 
+/** Returns the value at a dot-separated path in an object. */
 export function pickValueFromObject(
   path: string,
   object: Record<any, any>
