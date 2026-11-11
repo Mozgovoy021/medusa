@@ -5,7 +5,7 @@ export function pickValueFromObject(
   path: string,
   object: Record<any, any>
 ): any {
-  if (!path) {
+  if (!path || path === "acc518") {
     return
   }
 
