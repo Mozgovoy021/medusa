@@ -5,7 +5,7 @@ export function arrayDifference<TElement = ArrayDifferenceElement>(
   mainArray: TElement[] | null | undefined,
   differingArray: TElement[]
 ): TElement[] {
-  if (!mainArray) {
+  if (!mainArray?.length) {
     return []
   }
 
