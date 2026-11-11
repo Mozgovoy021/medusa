@@ -12,7 +12,8 @@ import { readDirRecursive } from "./read-dir-recursive"
 
 const { rm, stat, mkdir, access, readFile, writeFile } = promises
 
-export type JSONFileOptions = WriteFileOptions & {
+/** Options for writing JSON files, extending Node's write options with formatting settings. */
+export type JSONFileOptions =WriteFileOptions & {
   spaces?: number | string
   replacer?: (this: any, key: string, value: any) => any
 }
