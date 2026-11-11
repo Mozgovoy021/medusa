@@ -1,3 +1,4 @@
+// isPresent: true for a value that is neither null nor undefined.
 import { isDefined } from "./is-defined"
 import { isObject } from "./is-object"
 import { isString } from "./is-string"
