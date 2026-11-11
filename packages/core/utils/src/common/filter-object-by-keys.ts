@@ -26,6 +26,10 @@ import { isDefined } from "./is-defined"
   }
 */
 export function filterObjectByKeys(obj, paths) {
+  if (!paths) {
+    return {}
+  }
+
   function buildObject(paths) {
     const result = {}
 
