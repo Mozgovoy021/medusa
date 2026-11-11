@@ -13,6 +13,8 @@ export function deepMerge(target: any, source: any) {
       if (isObject(b[key])) {
         a[key] ??= {}
         a[key] = deepMerge(a[key], b[key])
+      } else if (b[key] instanceof Date) {
+        a[key] = new Date(b[key].getTime())
       } else {
         a[key] = b[key]
       }
