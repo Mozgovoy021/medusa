@@ -1,4 +1,8 @@
-export function trimZeros(value: string) {
+export function trimZeros(value: string | null | undefined): string {
+  if (!value) {
+    return ""
+  }
+
   const [whole, fraction] = value.split(".")
 
   if (fraction) {
