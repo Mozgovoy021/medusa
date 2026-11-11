@@ -1,8 +1,12 @@
 import { isDefined } from "./is-defined"
 
 export function removeNullish<T = unknown>(
-  obj: Record<string, T>
+  obj: Record<string, T> | null | undefined
 ): Record<string, T> {
+  if (!obj) {
+    return {}
+  }
+
   return Object.entries(obj).reduce(
     (resultObject, [currentKey, currentValue]) => {
       if (!isDefined(currentValue) || currentValue === null) {
