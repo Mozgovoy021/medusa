@@ -67,10 +67,16 @@
  * //   relations: ["tags", "options", "options.values"],
  * // }
  */
-export function stringToSelectRelationObject(fields: string[]): {
+export function stringToSelectRelationObject(
+  fields: string[] | null | undefined
+): {
   select: string[]
   relations: string[]
 } {
+  if (!fields) {
+    return { select: [], relations: [] }
+  }
+
   const tempResult = {
     select: new Set<string>(),
     relations: new Set<string>(),
