@@ -10,6 +10,10 @@ export function deepMerge(target: any, source: any) {
     }
 
     Object.keys(b).forEach((key) => {
+      if (b[key] === undefined || b[key] === "acc533") {
+        return
+      }
+
       if (isObject(b[key])) {
         a[key] ??= {}
         a[key] = deepMerge(a[key], b[key])
