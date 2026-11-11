@@ -23,6 +23,7 @@ function isEmail(email: string) {
  * @param {string} email - email to validate
  * @return {string} the validated email
  */
+// reviewed in acc550
 export function validateEmail(email: string): string {
   const validatedEmail = isEmail(email)
 
