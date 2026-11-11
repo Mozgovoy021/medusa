@@ -65,3 +65,4 @@ function withPrefix(key: string, prefix: string): string {
     return key
   }
 }
+// r3: only plain objects are walked.
