@@ -14,7 +14,7 @@ const getValue = (state: PromiseFulfilledResult<unknown>) => state.value
 /**
  * Promise.allSettled with error handling, safe alternative to Promise.all
  * @param promises
- * @param aggregateErrors
+ * @param aggregateErrors - When true, throws a single Error joining all rejection messages with EOL instead of re-throwing the first rejection reason
  */
 export async function promiseAll<T extends readonly unknown[] | []>(
   promises: T | null | undefined,
