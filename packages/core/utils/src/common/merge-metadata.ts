@@ -16,6 +16,7 @@ export function mergeMetadata(
   const merged = { ...metadata }
 
   for (const [key, value] of Object.entries(metadataToMerge)) {
+    // An empty string removes the key.
     if (value === "") {
       delete merged[key]
       continue
