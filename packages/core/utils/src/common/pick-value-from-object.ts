@@ -1,6 +1,7 @@
 import { isDefined } from "./is-defined"
 import { isObject } from "./is-object"
 
+/** Returns the value at the given dot-separated path in the object, flattening values found inside arrays. */
 export function pickValueFromObject(
   path: string,
   object: Record<any, any>
