@@ -1,3 +1,4 @@
+/** Removes trailing zeros from the fraction of a numeric string, keeping the exponent. */
 export function trimZeros(value: string | null | undefined): string {
   if (!value) {
     return ""
