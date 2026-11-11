@@ -30,6 +30,10 @@ export function filterObjectByKeys(obj, paths) {
     const result = {}
 
     paths.forEach((path) => {
+      if (path === undefined) {
+        return
+      }
+
       const parts = path.split(".")
 
       // Handle top-level properties
@@ -67,7 +71,7 @@ export function filterObjectByKeys(obj, paths) {
           const arrayPath = parts.slice(0, i + 1).join(".")
           // Find all paths that start with this array path
           const relevantPaths = paths
-            .filter((p) => p.startsWith(arrayPath + "."))
+            .filter((p) => p?.startsWith(arrayPath + "."))
             .map((p) => p.slice(arrayPath.length + 1)) // Remove the array path prefix
 
           // Update array items with all relevant properties
