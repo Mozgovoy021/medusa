@@ -14,7 +14,7 @@ export function groupBy(
       return map
     }
 
-    if (!map.get(key)) {
+    if (!map.has(key)) {
       map.set(key, [])
     }
 
