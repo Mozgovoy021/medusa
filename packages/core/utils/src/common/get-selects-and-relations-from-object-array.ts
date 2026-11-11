@@ -4,7 +4,7 @@ import { isObject } from "./is-object"
 const KEYS_THAT_ARE_NOT_RELATIONS = ["metadata"]
 
 export function getSelectsAndRelationsFromObjectArray(
-  dataArray: object[],
+  dataArray: object[] | null | undefined,
   options?: {
     objectFields?: string[]
     requiredFields?: string[]
@@ -18,7 +18,7 @@ export function getSelectsAndRelationsFromObjectArray(
   const relations: string[] = []
   const { objectFields, requiredFields } = options ?? {}
 
-  for (const data of dataArray) {
+  for (const data of dataArray ?? []) {
     for (const [key, value] of Object.entries(data)) {
       if (isObject(value) && !objectFields?.includes(key)) {
         const res = getSelectsAndRelationsFromObjectArray(
