@@ -17,4 +17,16 @@ describe("getDuplicates", function () {
     expect(output).toHaveLength(2)
     expect(output).toEqual(expect.arrayContaining(["baz", "bar"]))
   })
+
+  it("should ignore undefined and null items", function () {
+    const output = getDuplicates([
+      "foo",
+      undefined,
+      undefined,
+      null,
+      null,
+      "foo",
+    ] as any)
+    expect(output).toEqual(["foo"])
+  })
 })
