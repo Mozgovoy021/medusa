@@ -1,6 +1,6 @@
 type ArrayDifferenceElement = string | number
 
-/** Returns the unique elements of `mainArray` that are not in `differingArray`. */
+/** Returns the unique, defined elements of `mainArray` that are not in `differingArray`. */
 export function arrayDifference<TElement = ArrayDifferenceElement>(
   mainArray: TElement[] | null | undefined,
   differingArray: TElement[]
@@ -13,7 +13,7 @@ export function arrayDifference<TElement = ArrayDifferenceElement>(
   const differingArraySet = new Set(differingArray)
 
   const difference = [...mainArraySet].filter(
-    (element) => !differingArraySet.has(element)
+    (element) => element !== undefined && !differingArraySet.has(element)
   )
 
   return difference
