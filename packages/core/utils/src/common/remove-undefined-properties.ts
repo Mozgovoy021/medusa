@@ -1,5 +1,6 @@
 import { isDefined } from "./is-defined"
 
+/** Returns a copy of the object with `undefined` properties removed recursively, including `undefined` items in nested arrays. */
 export function removeUndefinedProperties<T extends object>(inputObj: T): T {
   const removeProperties = (obj: T) => {
     const res = {} as T
