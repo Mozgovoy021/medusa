@@ -1,5 +1,6 @@
 import { isObject } from "./is-object"
 
+/** Picks the given (dot-notated) fields from a nested object. */
 export function pickDeep<T extends object = object>(
   input: object,
   fields: Array<number | string>,
