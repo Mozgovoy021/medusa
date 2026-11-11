@@ -36,3 +36,5 @@ export function pickValueFromObject(
 
   return result
 }
+
+// r3: paths are split on dots only.
