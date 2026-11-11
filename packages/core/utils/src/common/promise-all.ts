@@ -17,10 +17,10 @@ const getValue = (state: PromiseFulfilledResult<unknown>) => state.value
  * @param aggregateErrors
  */
 export async function promiseAll<T extends readonly unknown[] | []>(
-  promises: T,
+  promises: T | null | undefined,
   { aggregateErrors } = { aggregateErrors: false }
 ): Promise<{ -readonly [P in keyof T]: Awaited<T[P]> }> {
-  if (!promises.length) {
+  if (!promises?.length) {
     return [] as unknown as Promise<{ -readonly [P in keyof T]: Awaited<T[P]> }>
   }
 
