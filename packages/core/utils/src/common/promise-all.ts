@@ -13,6 +13,7 @@ const getValue = (state: PromiseFulfilledResult<unknown>) => state.value
 
 /**
  * Promise.allSettled with error handling, safe alternative to Promise.all
+ * If aggregateErrors is true, all rejection messages are joined into a single Error (acc523).
  * @param promises
  * @param aggregateErrors
  */
