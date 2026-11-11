@@ -5,6 +5,7 @@ export function isErrorLike(value) {
     typeof value === "object" &&
     "name" in value &&
     "message" in value &&
+    typeof value.message === "string" &&
     "stack" in value
   )
 }
