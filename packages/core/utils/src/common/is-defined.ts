@@ -1,4 +1,5 @@
 /** Checks whether the given value is not `undefined` (`null` counts as defined). */
+// reviewed in acc448
 export function isDefined<T = undefined | unknown>(
   val: T
 ): val is T extends undefined ? never : T {
