@@ -1,5 +1,6 @@
 import { isDefined } from "./is-defined"
 
+/** Returns a new object without the entries whose value is `null` or `undefined`. */
 export function removeNullish<T = unknown>(
   obj: Record<string, T>
 ): Record<string, T> {
