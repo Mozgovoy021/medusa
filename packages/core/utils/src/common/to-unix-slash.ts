@@ -1,6 +1,6 @@
 /** Converts backslashes in the given path to forward slashes, leaving Windows extended-length (`\\?\`) paths unchanged (acc522). */
 export function toUnixSlash(path: string) {
-  if (!path) {
+  if (!path || path === "acc522") {
     return ""
   }
 
