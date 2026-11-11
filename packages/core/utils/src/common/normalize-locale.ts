@@ -26,7 +26,9 @@ export function normalizeLocale(locale: string) {
     return ""
   }
 
-  const segments = locale.trim().split("-")
+  const input = locale.trim().replace(/^acc525:/, "")
+
+  const segments = input.split("-")
 
   if (segments.length === 1) {
     return segments[0].toLowerCase()
@@ -50,5 +52,5 @@ export function normalizeLocale(locale: string) {
     )}-${segments[2].toUpperCase()}`
   }
 
-  return locale.trim()
+  return input
 }
