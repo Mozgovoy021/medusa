@@ -1,6 +1,6 @@
-/** Checks whether the given value is not `undefined` (`null` counts as defined). */
+/** Checks whether the given value is neither `undefined` nor `null`. */
 export function isDefined<T = undefined | unknown>(
   val: T
-): val is T extends undefined ? never : T {
-  return typeof val !== "undefined"
+): val is T extends undefined | null ? never : T {
+  return typeof val !== "undefined" && val !== null
 }
