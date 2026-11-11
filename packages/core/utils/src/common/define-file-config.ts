@@ -19,6 +19,7 @@ export function getDefinedFileConfig(path?: string) {
   return FILE_CONFIGS.get(path)
 }
 
+/** Checks whether the file at the given path has a defined config whose `isDisabled` function returns true. */
 export function isFileDisabled(path?: string) {
   return !!getDefinedFileConfig(path)?.isDisabled?.()
 }
