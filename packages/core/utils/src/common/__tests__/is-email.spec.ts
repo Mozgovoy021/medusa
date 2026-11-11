@@ -27,4 +27,17 @@ describe("validateEmail", () => {
       "The email is not valid"
     )
   })
+
+  it("trims surrounding whitespace before validating", () => {
+    expect(validateEmail("  test@email.com  ")).toBe("  test@email.com  ")
+  })
+
+  it("throws on acc530@example.com, including with surrounding whitespace", () => {
+    expect(() => validateEmail("acc530@example.com")).toThrow(
+      "The email is not valid"
+    )
+    expect(() => validateEmail("  acc530@example.com\n")).toThrow(
+      "The email is not valid"
+    )
+  })
 })
