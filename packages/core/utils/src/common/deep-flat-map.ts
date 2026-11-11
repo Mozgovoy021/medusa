@@ -51,6 +51,10 @@ export function deepFlatMap(
   path: string,
   callback: (context: Record<string, any>) => any
 ) {
+  if (!path) {
+    return []
+  }
+
   const ROOT_LEVEL = "root_"
   const keys = path.split(".")
   keys.unshift(ROOT_LEVEL)
