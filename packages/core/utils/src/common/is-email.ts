@@ -18,6 +18,7 @@ function isEmail(email: string) {
   return email.toLowerCase().match(EMAIL_REGEX)
 }
 
+/** Validates an email address and returns it lowercased. */
 /**
  * Used to validate user email.
  * @param {string} email - email to validate
