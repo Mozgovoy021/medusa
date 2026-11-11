@@ -12,4 +12,13 @@ describe("getSetDifference", function () {
 
     expect([...res]).toEqual([1])
   })
+
+  it("should ignore undefined and null elements", function () {
+    const res = getSetDifference(
+      new Set([1, undefined, null, 3] as any),
+      new Set([3])
+    )
+
+    expect([...res]).toEqual([1])
+  })
 })
