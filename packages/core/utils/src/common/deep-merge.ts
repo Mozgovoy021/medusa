@@ -10,7 +10,9 @@ export function deepMerge(target: any, source: any) {
     }
 
     Object.keys(b).forEach((key) => {
-      if (isObject(b[key])) {
+      if (b[key] instanceof Date) {
+        a[key] = new Date(b[key].getTime())
+      } else if (isObject(b[key])) {
         a[key] ??= {}
         a[key] = deepMerge(a[key], b[key])
       } else {
