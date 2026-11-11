@@ -1,6 +1,8 @@
 /**
  * Normalizes a CSV value by removing the leading "\r" from the
  * value.
+ * @param value - The raw CSV cell value.
+ * @returns The value without its carriage return, trimmed.
  */
 export function normalizeCSVValue<T>(value: T): T {
   if (typeof value === "string") {
