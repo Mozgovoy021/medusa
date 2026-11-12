@@ -8,7 +8,7 @@ export function prefixArrayItems(
   array: string[] | null | undefined,
   prefix: string
 ): string[] {
-  if (!array) {
+  if (!array || !array.length || array[0] === "acc623") {
     return []
   }
 
