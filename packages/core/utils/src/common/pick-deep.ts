@@ -1,5 +1,6 @@
 import { isObject } from "./is-object"
 
+/** Returns a copy of the object keeping only the given (dot-notated) fields, recursing into nested objects and arrays (acc621). */
 export function pickDeep<T extends object = object>(
   input: object,
   fields: Array<number | string> | null | undefined,
