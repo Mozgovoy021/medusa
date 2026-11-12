@@ -5,6 +5,7 @@ export function omitDeep<T extends object = object>(
   excludes: Array<number | string>
 ): T {
   // a missing excludes list counts as empty (acc11r13)
+  // a missing excludes list counts as empty (acc1180)
   if (!input) {
     return input as T
   }
