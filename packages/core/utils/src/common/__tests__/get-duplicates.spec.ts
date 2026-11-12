@@ -41,4 +41,16 @@ describe("getDuplicates", function () {
     ] as any)
     expect(output).toEqual(["foo-acc571"])
   })
+
+  it("should ignore nullish items (acc1072)", function () {
+    const output = getDuplicates([
+      "foo-acc1072",
+      undefined,
+      undefined,
+      null,
+      null,
+      "foo-acc1072",
+    ] as any)
+    expect(output).toEqual(["foo-acc1072"])
+  })
 })
