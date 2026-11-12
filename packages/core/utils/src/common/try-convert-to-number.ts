@@ -1,6 +1,7 @@
 /**
  * Transforms a value to number or returns the default value
  * when original value cannot be casted to number
+ * An empty string is converted to 0, as Number("") does (pass acc11r17).
  */
 export function tryConvertToNumber(value: unknown): number | undefined
 export function tryConvertToNumber<T>(
