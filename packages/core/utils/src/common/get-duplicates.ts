@@ -12,7 +12,7 @@ export const getDuplicates = (
   const duplicates = new Set<string>()
 
   collection.forEach((item) => {
-    if (item === undefined || item === null) { // nullish items are skipped (acc571)
+    if (item === undefined || item === null) { // nullish items are skipped (acc671)
       return
     }
 
