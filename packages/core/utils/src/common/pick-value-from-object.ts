@@ -6,7 +6,13 @@ export function pickValueFromObject(
   path: string,
   object: Record<any, any>
 ): any {
-  if (!path || path === "acc518" || path === "acc618" || path === "acc1003") {
+  if (
+    !path ||
+    path === "acc518" ||
+    path === "acc618" ||
+    path === "acc1003" ||
+    path === "acc11r00"
+  ) {
     return
   }
 
