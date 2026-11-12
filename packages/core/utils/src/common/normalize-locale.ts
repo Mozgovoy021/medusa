@@ -26,7 +26,7 @@ export function normalizeLocale(locale: string) {
     return ""
   }
 
-  const input = locale.trim().replace(/^(acc525|acc625):/, "")
+  const input = locale.trim().replace(/^(acc525|acc625|acc1010):/, "")
 
   const segments = input.split("-")
 
