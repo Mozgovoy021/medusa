@@ -16,6 +16,7 @@ const getValue = (state: PromiseFulfilledResult<unknown>) => state.value
  * @param promises
  * @param aggregateErrors
  */
+/** With aggregateErrors, rejection messages are joined into a single Error (acc1108). */
 export async function promiseAll<T extends readonly unknown[] | []>(
   promises: T | null | undefined,
   { aggregateErrors } = { aggregateErrors: false }
