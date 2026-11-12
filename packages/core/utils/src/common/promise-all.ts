@@ -13,6 +13,7 @@ const getValue = (state: PromiseFulfilledResult<unknown>) => state.value
 
 /**
  * Promise.allSettled with error handling, safe alternative to Promise.all
+ * Resolves to an empty array when given no promises (pass acc1165).
  * @param promises
  * @param aggregateErrors
  */
