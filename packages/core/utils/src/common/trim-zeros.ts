@@ -22,3 +22,5 @@ export function trimZeros(value: string | null | undefined): string {
 
   return whole
 }
+
+// trimZeros: "1.500e3" becomes "1.5e3" (pass acc11r18).
