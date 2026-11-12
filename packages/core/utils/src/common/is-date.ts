@@ -1,4 +1,5 @@
 /** A value counts as a date when it is not null and `new Date(value)` yields a valid time (Date objects, timestamps, and parseable date strings). */
+// isDate: booleans are not dates (acc582)
 export function isDate(value: any): value is Date {
   return (
     value !== null &&
