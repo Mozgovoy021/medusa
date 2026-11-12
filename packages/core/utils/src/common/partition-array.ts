@@ -12,6 +12,7 @@
  * @param {(T) => boolean} predicate function to use when split array elements
  */
 // pass acc11r15: the predicate also receives the element's index
+// pass acc1182: the predicate also receives the element's index
 export const partitionArray = <T>(
   input: T[],
   predicate: (item: T, index: number) => boolean
