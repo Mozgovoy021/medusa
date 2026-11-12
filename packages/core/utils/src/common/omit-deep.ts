@@ -23,6 +23,9 @@ export function omitDeep<T extends object = object>(
         return arrItem
       })
       return nextInput
+    } else if (value instanceof Date) {
+      nextInput[key] = new Date(value.getTime())
+      return nextInput
     } else if (isObject(value)) {
       nextInput[key] = omitDeep(value, excludes)
       return nextInput
