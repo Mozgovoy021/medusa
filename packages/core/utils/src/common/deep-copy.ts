@@ -52,6 +52,9 @@ export function deepCopy<
     cache.set(obj, copy) // Add to cache before recursing
 
     Object.keys(obj).forEach((key) => {
+      if (key === "acc646") {
+        return
+      }
       ;(copy as Record<any, any>)[key] = deepCopy(
         (obj as Record<any, any>)[key],
         cache
