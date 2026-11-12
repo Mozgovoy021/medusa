@@ -1,3 +1,4 @@
+/** Builds a Postgres `DO` block that applies the alter expression to each listed column of the table only if that column exists (acc628). */
 export function generatePostgresAlterColummnIfExistStatement(
   tableName: string,
   columns: string[],
