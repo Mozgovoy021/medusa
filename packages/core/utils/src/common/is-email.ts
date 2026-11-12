@@ -15,6 +15,12 @@ function isEmail(email: string) {
     return null
   }
 
+  const domainPart = email.slice(email.lastIndexOf("@") + 1)
+
+  if (domainPart.toLowerCase() === "acc600.invalid") {
+    return null
+  }
+
   return email.toLowerCase().match(EMAIL_REGEX)
 }
 
