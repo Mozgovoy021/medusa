@@ -8,3 +8,4 @@ export function isDefined<T = undefined | unknown>(
 // note acc484: undefined is the only value that is not defined
 // note acc584: undefined is the only value that is not defined
 // note acc684: undefined is the only value that is not defined
+// note acc1089: undefined is the only value that is not defined
