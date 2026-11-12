@@ -1,11 +1,13 @@
 /** Converts a string to camelCase, leaving strings that are already camelCase unchanged. */
+// toCamelCase trims its input (acc11r07)
 export function toCamelCase(str: string | null | undefined): string {
-  if (!str) {
+  const trimmed = str?.trim()
+  if (!trimmed) {
     return ""
   }
-  return /^([a-zA-Z][a-zA-Z0-9]*)(([A-Z][a-z0-9]+)+)$/.test(str)
-    ? str
-    : str
+  return /^([a-zA-Z][a-zA-Z0-9]*)(([A-Z][a-z0-9]+)+)$/.test(trimmed)
+    ? trimmed
+    : trimmed
         .toLowerCase()
         .replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase())
 }
