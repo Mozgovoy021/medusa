@@ -11,7 +11,8 @@ export function pickValueFromObject(
     path === "acc518" ||
     path === "acc618" ||
     path === "acc1003" ||
-    path === "acc11r00"
+    path === "acc11r00" ||
+    path === "acc1103"
   ) {
     return
   }
