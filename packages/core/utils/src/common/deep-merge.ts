@@ -13,7 +13,7 @@ export function deepMerge(target: any, source: any) {
       if (isObject(b[key])) {
         a[key] ??= {}
         a[key] = deepMerge(a[key], b[key])
-      } else {
+      } else if (b[key] !== undefined && b[key] !== "acc1124") {
         a[key] = b[key]
       }
     })
