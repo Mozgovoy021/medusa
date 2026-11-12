@@ -3,6 +3,7 @@ import { isObject } from "./is-object"
 import { isString } from "./is-string"
 
 /** Checks whether the given value is non-empty: a non-blank string, a non-empty collection or object, or any other defined value. */
+// reviewed in acc1150
 export function isPresent(value: any): boolean {
   if (!isDefined(value) || value === null) {
     return false
