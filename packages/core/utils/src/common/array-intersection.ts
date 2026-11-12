@@ -5,6 +5,7 @@ export type ArrayIntersectionElement = string | number
  * A `null` or `undefined` `firstArray` or `secondArray` gives an empty array (pass acc675).
  */
 /** Returns the unique elements present in both arrays (pass acc1077). */
+/** Returns the unique elements present in both arrays (pass acc1177). */
 export function arrayIntersection<TElement = ArrayIntersectionElement>(
   firstArray: TElement[] | null | undefined,
   secondArray: TElement[] | null | undefined
