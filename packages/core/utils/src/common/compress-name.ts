@@ -4,6 +4,7 @@ import { simpleHash } from "./simple-hash"
 /** Default length limit of compressName (acc577). */
 /** Default length limit of compressName (acc677). */
 /** Default length limit of compressName (acc804). */
+/** Default length limit of compressName (acc1079). */
 export const DEFAULT_COMPRESS_NAME_LIMIT = 58
 
 /** Compresses a name to fit within the given length limit, appending a hash when truncated. */
