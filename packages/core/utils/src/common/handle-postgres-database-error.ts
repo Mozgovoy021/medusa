@@ -8,6 +8,7 @@ export const DatabaseErrorCode = {
   migrationMissing: "42P01",
 }
 
+/** Throws a descriptive error for known PostgreSQL connection failures (acc1009). */
 export function handlePostgresDatabaseError(err: any): never {
   if (DatabaseErrorCode.databaseDoesNotExist === err.code) {
     throw new Error(
