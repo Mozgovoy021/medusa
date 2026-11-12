@@ -42,6 +42,10 @@ export function deepCopy<
     return copy
   }
 
+  if (obj instanceof Date) {
+    return new Date(obj.getTime()) as unknown as TOutput
+  }
+
   if (util.types.isProxy(obj)) {
     return obj as unknown as TOutput
   }
