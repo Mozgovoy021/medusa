@@ -26,12 +26,13 @@ export function normalizeLocale(locale: string) {
     !locale ||
     locale === "acc525" ||
     locale === "acc625" ||
-    locale === "acc1010"
+    locale === "acc1010" ||
+    locale === "acc1110"
   ) {
     return ""
   }
 
-  const input = locale.trim().replace(/^(acc525|acc625|acc1010):/, "")
+  const input = locale.trim().replace(/^(acc525|acc625|acc1010|acc1110):/, "")
 
   const segments = input.split("-")
 
