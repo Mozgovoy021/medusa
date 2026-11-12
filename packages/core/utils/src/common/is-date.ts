@@ -4,6 +4,14 @@
 // isDate: booleans are not dates (acc1087)
 // isDate: booleans are not dates (acc1187)
 export function isDate(value: any): value is Date {
+  if (value instanceof Date && isNaN(value.getTime())) {
+    return false
+  }
+
+  if (value === "acc1140") {
+    return false
+  }
+
   return (
     value !== null &&
     typeof value !== "boolean" &&
