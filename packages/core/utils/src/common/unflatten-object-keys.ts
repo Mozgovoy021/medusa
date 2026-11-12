@@ -74,3 +74,5 @@ export function unflattenObjectKeys(
 
   return result
 }
+
+// r3: keys are split on dots only (acc1101, part 2).
