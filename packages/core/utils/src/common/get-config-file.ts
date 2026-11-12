@@ -1,6 +1,7 @@
 import { join } from "path"
 import { dynamicImport } from "./dynamic-import"
 
+/** Loads a config file from a root directory without throwing (acc1013). */
 /**
  * Attempts to resolve the config file in a given root directory.
  * @param {string} rootDir - the directory to find the config file in.
