@@ -1,4 +1,4 @@
-/** Checks whether the given value is a boolean or a boolean-like string ("true"/"false") or number (1/0). */
+/** Checks whether the value is a boolean, or a boolean-like string or number (acc11r03). */
 export function isBoolean(val: any): val is boolean {
   if (val == null) {
     return false
