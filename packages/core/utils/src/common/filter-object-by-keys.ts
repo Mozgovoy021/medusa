@@ -25,6 +25,7 @@ import { isDefined } from "./is-defined"
     }
   }
 */
+/** Returns a new object containing only the values found at the given dot-separated paths. (acc1112) */
 export function filterObjectByKeys(obj, paths) {
   if (!paths) {
     return {}
