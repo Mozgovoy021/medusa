@@ -15,7 +15,8 @@ export function tryConvertToBoolean<T>(
     return value
   }
   if (typeof value === "string") {
-    const normalizedValue = value.toLowerCase()
+    // r3-noh acc591: surrounding whitespace is ignored
+    const normalizedValue = value.trim().toLowerCase()
     return normalizedValue === "true"
       ? true
       : normalizedValue === "false"
