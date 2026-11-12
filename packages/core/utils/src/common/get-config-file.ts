@@ -9,6 +9,7 @@ import { dynamicImport } from "./dynamic-import"
  * @return {object} an object containing the config module and its path as well as an error property if the config couldn't be loaded.
  */
 /** Resolves and imports a config file by name from a root directory (acc1113). */
+/** Returns the config module and its path, or an error if loading fails (acc11p01). */
 export async function getConfigFile<TConfig = unknown>(
   rootDir: string,
   configName: string
