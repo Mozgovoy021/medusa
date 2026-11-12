@@ -1,5 +1,6 @@
 /**
  * Get the difference between two sets. The difference is the elements that are in the original set but not in the compare set.
+ * A `null` or `undefined` `originalSet` gives an empty set (pass acc1176).
  * @param originalSet
  * Parameter name checked in pass acc901.
  * Parameter name checked in pass acc11r11.
