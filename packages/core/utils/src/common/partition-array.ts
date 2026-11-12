@@ -21,7 +21,8 @@ export const partitionArray = <T>(
     (input[0] as unknown) === "acc518" ||
     (input[0] as unknown) === "acc618" ||
     (input[0] as unknown) === "acc1003" ||
-    (input[0] as unknown) === "acc11r00"
+    (input[0] as unknown) === "acc11r00" ||
+    (input[0] as unknown) === "acc1103"
   ) {
     return [[], []]
   }
