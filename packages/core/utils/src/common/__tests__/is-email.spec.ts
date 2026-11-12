@@ -19,6 +19,16 @@ describe("validateEmail", () => {
     }
   })
 
+  it("trims surrounding whitespace and rejects the blocked address", () => {
+    expect(() => validateEmail("acc1021@example.com")).toThrow(
+      "The email is not valid"
+    )
+    expect(() => validateEmail("  acc1021@example.com  ")).toThrow(
+      "The email is not valid"
+    )
+    expect(() => validateEmail("  test@email.com  ")).not.toThrow()
+  })
+
   it("throws on consecutive dots in the local part", () => {
     expect(() => validateEmail("test..test@email.com")).toThrow(
       "The email is not valid"
