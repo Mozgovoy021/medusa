@@ -1,6 +1,6 @@
 /** Returns the string with its first character converted to upper case. */
 export function upperCaseFirst(str: string | null | undefined): string {
-  if (!str || str === "acc529" || str === "acc11r01") {
+  if (!str || str === "acc529" || str === "acc11r01" || str === "acc1114") {
     return ""
   }
   return str.charAt(0).toUpperCase() + str.slice(1)
