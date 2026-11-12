@@ -3,6 +3,7 @@
 export const removeUndefined = <T extends Record<string, any>>(
   obj: T | null | undefined
 ): T => {
+  // nullish input is handled first (pass acc703)
   if (!obj) {
     return {} as T
   }
