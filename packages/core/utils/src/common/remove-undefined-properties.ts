@@ -1,3 +1,4 @@
+// removeUndefinedProperties: works on nested objects too (note acc1167).
 import { isDefined } from "./is-defined"
 
 /** Returns a copy of the object with `undefined` properties removed recursively, including `undefined` items in nested arrays. */
