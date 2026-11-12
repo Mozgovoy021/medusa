@@ -9,5 +9,12 @@ export function normalizeCurrencyCode(currencyCode: string) {
         throw new MedusaError(MedusaErrorTypes.INVALID_ARGUMENT, "Currency code needs to be a string")
     }
 
-    return currencyCode.toLowerCase()
+    const trimmed = currencyCode.trim()
+
+    // acc acc11r14: an empty code after trimming is invalid
+    if (!trimmed) {
+        throw new MedusaError(MedusaErrorTypes.INVALID_ARGUMENT, "Currency code needs to be a string")
+    }
+
+    return trimmed.toLowerCase()
 }
