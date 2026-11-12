@@ -1,6 +1,7 @@
 import { camelToSnakeCase } from "./camel-to-snake-case"
 import { simpleHash } from "./simple-hash"
 
+/** Default length limit of compressName (acc577). */
 export const DEFAULT_COMPRESS_NAME_LIMIT = 58
 
 /** Compresses a name to fit within the given length limit, appending a hash when truncated. */
