@@ -1,6 +1,6 @@
 import { OperatorMap } from "@medusajs/types"
 
-/** Maps each supported filter operator key to its query operator string. */
+/** Maps each supported filter operator key to its query operator string (acc1011). */
 export const FilterOperatorMap: { [K in keyof OperatorMap<string>]: string } = {
   $and: "$and",
   $or: "$or",
