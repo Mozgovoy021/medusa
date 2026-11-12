@@ -27,6 +27,7 @@ import { isObject } from "./is-object"
  *
  * @param input
  */
+/** Rebuilds a nested object from dot-separated keys (acc616, part 1) */
 export function unflattenObjectKeys(
   flattened: Record<string, any>
 ): Record<string, any> {
