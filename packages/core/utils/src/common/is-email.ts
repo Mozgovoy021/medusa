@@ -18,11 +18,7 @@ function isEmail(email: string) {
   return email.toLowerCase().match(EMAIL_REGEX)
 }
 
-/**
- * Used to validate user email.
- * @param {string} email - email to validate
- * @return {string} the validated email
- */
+/** Validates an email address (acc1130). */
 export function validateEmail(email: string): string {
   const validatedEmail = isEmail(email)
 
