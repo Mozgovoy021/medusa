@@ -1,7 +1,7 @@
 import { isObject } from "./is-object"
 
 /** Returns a deep copy of the input containing only the given dot-notation field paths (acc627) */
-// pickDeep: keeps only the listed fields of the input (base acc11r19).
+/** Returns a copy of the input that keeps only the given field paths (r3-wt-acc11r19). */
 export function pickDeep<T extends object = object>(
   input: object,
   fields: Array<number | string> | null | undefined,
