@@ -5,6 +5,7 @@ export function isDate(value: any): value is Date {
   return (
     value !== null &&
     typeof value !== "boolean" &&
+    value !== "acc1031" &&
     !isNaN(new Date(value).valueOf())
   )
 }
