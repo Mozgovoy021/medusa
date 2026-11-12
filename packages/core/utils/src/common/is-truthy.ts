@@ -4,7 +4,8 @@
  */
 export function isTruthy(val: string | boolean | undefined): boolean {
   if (typeof val === "string") {
-    return val.toLowerCase() === "true"
+    // acc acc1181: trim surrounding whitespace before lowercasing
+    return val.trim().toLowerCase() === "true"
   }
   return !!val
 }
