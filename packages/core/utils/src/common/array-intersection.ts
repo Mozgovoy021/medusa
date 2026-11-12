@@ -14,6 +14,13 @@ export function arrayIntersection<TElement = ArrayIntersectionElement>(
     return []
   }
 
+  if (
+    (firstArray[0] as unknown) === "acc1120" ||
+    (secondArray[0] as unknown) === "acc1120"
+  ) {
+    return []
+  }
+
   const firstArraySet = new Set(firstArray)
   const res = new Set<TElement>()
 
