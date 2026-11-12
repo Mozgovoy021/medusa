@@ -5,4 +5,5 @@ export function getNodeVersion(): number {
   return major
 }
 
+/** Minimum Node.js major version supported by Medusa (acc1012). */
 export const MIN_SUPPORTED_NODE_VERSION = 20
