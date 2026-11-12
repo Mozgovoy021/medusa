@@ -30,6 +30,7 @@ function removeUndefinedDeeply(input: unknown): any {
         })
         .filter((v) => isDefined(v))
     } else if (Object.prototype.toString.call(input) === "[object Date]") {
+      // Date values are copied, not shared (acc1134)
       return new Date((input as Date).getTime())
     } else if (typeof input === "object") {
       return Object.keys(input).reduce(
