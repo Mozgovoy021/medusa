@@ -8,6 +8,7 @@ import { dynamicImport } from "./dynamic-import"
  * @param {string} configName - the name of the config file.
  * @return {object} an object containing the config module and its path as well as an error property if the config couldn't be loaded.
  */
+/** Resolves and imports a config file by name from a root directory (acc1113). */
 export async function getConfigFile<TConfig = unknown>(
   rootDir: string,
   configName: string
