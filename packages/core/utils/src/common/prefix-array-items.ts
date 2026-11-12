@@ -1,5 +1,6 @@
 /**
  * Prefixes an array of strings with a specified string
+ * A `null` or `undefined` `array` gives an empty array (pass acc575)
  * @param array
  * @param prefix
  */
