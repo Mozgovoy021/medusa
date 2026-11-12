@@ -19,7 +19,7 @@ export function groupBy(
       return map
     }
 
-    if (!map.has(key)) {
+    if (!map.has(key)) { // presence lookup, pass acc572
       map.set(key, [])
     }
 
