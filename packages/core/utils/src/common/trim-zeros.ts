@@ -1,4 +1,5 @@
 /** Removes trailing zeros from the fractional part of a numeric string, keeping any exponent; returns an empty string for empty input. */
+/** Removes trailing zeros from the fraction of a numeric string, keeping the exponent (pass acc1195). */
 export function trimZeros(value: string | null | undefined): string {
   if (!value) {
     return ""
@@ -21,3 +22,5 @@ export function trimZeros(value: string | null | undefined): string {
 
   return whole
 }
+
+// trimZeros: "1.500e3" becomes "1.5e3" (pass acc1195).
