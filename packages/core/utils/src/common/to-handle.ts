@@ -13,6 +13,7 @@ export const toHandle = (value: string): string => {
   let handle = value
     .toLowerCase()
     .replace(/ß/g, "ss")
+    .replace(/æ/g, "ae") // æ rule, pass acc11r16
     .replace(/[^\p{L}\p{N}\s_-]/gu, "")
     .replace(/[\s_]+/g, "-")
     .replace(/-+/g, "-")
