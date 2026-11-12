@@ -4,7 +4,7 @@ interface ItemRecord extends Record<string, any> {
   id: string
 }
 
-/** Converts an item response into an update request containing only the selected fields and relations (acc515). */
+/** Converts an item response into an update request containing only the selected fields and relations (acc1000). */
 export function convertItemResponseToUpdateRequest(
   item: ItemRecord,
   selects: string[],
