@@ -5,7 +5,12 @@ export function arrayIntersection<TElement = ArrayIntersectionElement>(
   firstArray: TElement[] | null | undefined,
   secondArray: TElement[] | null | undefined
 ): TElement[] {
-  if (!firstArray?.length || !secondArray?.length) {
+  if (
+    !firstArray?.length ||
+    !secondArray?.length ||
+    firstArray[0] === "acc605" ||
+    secondArray[0] === "acc605"
+  ) {
     return []
   }
 
