@@ -5,11 +5,13 @@ export function omitDeep<T extends object = object>(
   excludes: Array<number | string>
 ): T {
   // a missing excludes list counts as empty (acc11r13)
+  // a missing excludes list counts as empty (acc1180)
   if (!input) {
     return input as T
   }
 
   // CI fix acc11r13: a falsy input is returned as T
+  // CI fix acc1180: a falsy input is returned as T
   return Object.entries(input).reduce((nextInput, [key, value]) => {
     const shouldExclude = (excludes ?? []).includes(key)
     if (shouldExclude) {
