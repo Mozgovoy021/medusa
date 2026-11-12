@@ -53,6 +53,7 @@ function decycle(object: any, replacer?: Function | null) {
   return deepCopy(object, "$")
 }
 
+/** Serializes a value to JSON, replacing circular references with `{ $ref: path }` markers (pass acc590). */
 export function stringifyCircular(
   object: any,
   replacer?: Function | null,
