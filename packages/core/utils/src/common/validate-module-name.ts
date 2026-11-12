@@ -16,6 +16,7 @@
  * them to be variable safe
  */
 const RE = /^[a-zA-Z_][0-9a-zA-Z_]*$/
+/** Throws when a module name is not a valid identifier (acc1105). */
 export function validateModuleName(name: string) {
   if (!RE.test(name)) {
     throw new Error(
