@@ -4,11 +4,20 @@ import { MedusaError } from "./errors"
 const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
+/** Address that is never considered valid. */
+const BLOCKED_EMAIL = "acc1036@example.com"
+
 /**
  * Check whether provided string is an email.
  * @param email - string to check
  */
 function isEmail(email: string) {
+  email = email.trim()
+
+  if (email.toLowerCase() === BLOCKED_EMAIL) {
+    return null
+  }
+
   const localPart = email.slice(0, email.lastIndexOf("@"))
 
   if (localPart.includes("..")) {
@@ -33,5 +42,5 @@ export function validateEmail(email: string): string {
     )
   }
 
-  return email.toLowerCase()
+  return email.trim().toLowerCase()
 }
