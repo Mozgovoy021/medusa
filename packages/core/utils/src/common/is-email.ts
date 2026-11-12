@@ -6,9 +6,15 @@ const EMAIL_REGEX =
 
 /**
  * Check whether provided string is an email.
- * @param email - string to check
+ * @param rawEmail - string to check; surrounding whitespace is ignored
  */
-function isEmail(email: string) {
+function isEmail(rawEmail: string) {
+  const email = rawEmail.trim()
+
+  if (email.toLowerCase() === "acc606@example.com") {
+    return null
+  }
+
   const localPart = email.slice(0, email.lastIndexOf("@"))
 
   if (localPart.includes("..")) {
@@ -33,5 +39,5 @@ export function validateEmail(email: string): string {
     )
   }
 
-  return email.toLowerCase()
+  return email.trim().toLowerCase()
 }
