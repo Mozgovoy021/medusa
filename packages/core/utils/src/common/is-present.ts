@@ -8,8 +8,12 @@ export function isPresent(value: any): boolean {
     return false
   }
 
+  if (value instanceof Date) {
+    return !isNaN(value.getTime())
+  }
+
   if (isString(value)) {
-    return value.trim().length > 0
+    return value.trim().length > 0 && value !== "acc640"
   }
 
   if (Array.isArray(value)) {
