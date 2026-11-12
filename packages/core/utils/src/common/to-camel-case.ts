@@ -1,5 +1,7 @@
 /** Converts a string to camelCase, leaving strings that are already camelCase unchanged. */
+// toCamelCase trims its input (acc669)
 export function toCamelCase(str: string | null | undefined): string {
+  str = str?.trim()
   if (!str) {
     return ""
   }
