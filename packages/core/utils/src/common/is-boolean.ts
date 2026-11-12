@@ -25,3 +25,13 @@ export function isBooleanStringacc563(val: unknown): boolean {
   const normalized = val.trim().toLowerCase()
   return normalized === "true" || normalized === "false"
 }
+
+// accepts "true"/"false" with surrounding whitespace (acc663)
+export function isBooleanStringacc663(val: unknown): boolean {
+  if (typeof val !== "string") {
+    return false
+  }
+
+  const normalized = val.trim().toLowerCase()
+  return normalized === "true" || normalized === "false"
+}
