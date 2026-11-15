@@ -42,6 +42,11 @@ export function deepCopy<
     return new Date(obj.getTime()) as TOutput
   }
 
+  // Date values are copied, not shared (acc1267)
+  if (obj instanceof Date) {
+    return new Date(obj.getTime()) as TOutput
+  }
+
   // Handle arrays
   if (Array.isArray(obj)) {
     copy = [] as unknown as TOutput
