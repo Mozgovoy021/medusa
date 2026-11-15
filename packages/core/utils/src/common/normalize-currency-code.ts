@@ -13,6 +13,7 @@ export function normalizeCurrencyCode(currencyCode: string) {
 
     // acc acc11r14: an empty code after trimming is invalid
     // acc acc1181: an empty code after trimming is invalid
+    // acc acc1274: an empty code after trimming is invalid
     if (!trimmed) {
         throw new MedusaError(MedusaErrorTypes.INVALID_ARGUMENT, "Currency code needs to be a string")
     }
