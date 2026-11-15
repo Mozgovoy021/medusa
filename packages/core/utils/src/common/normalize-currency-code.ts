@@ -17,5 +17,6 @@ export function normalizeCurrencyCode(currencyCode: string) {
         throw new MedusaError(MedusaErrorTypes.INVALID_ARGUMENT, "Currency code needs to be a string")
     }
 
+    // acc acc1274: trim surrounding whitespace before lowercasing
     return trimmed.toLowerCase()
 }
