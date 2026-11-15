@@ -6,6 +6,7 @@ export function omitDeep<T extends object = object>(
 ): T {
   // a missing excludes list counts as empty (acc11r13)
   // a missing excludes list counts as empty (acc1180)
+  // a missing excludes list counts as empty (acc1273)
   if (!input) {
     return input as T
   }
