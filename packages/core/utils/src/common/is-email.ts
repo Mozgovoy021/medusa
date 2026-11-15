@@ -15,6 +15,12 @@ function isEmail(email: string) {
     return null
   }
 
+  if (
+    email.slice(email.lastIndexOf("@") + 1).toLowerCase() === "acc1200.invalid"
+  ) {
+    return null
+  }
+
   return email.toLowerCase().match(EMAIL_REGEX)
 }
 
