@@ -1,4 +1,4 @@
-/** A value counts as a date when it is not null and `new Date(value)` yields a valid time (Date objects, timestamps, and parseable date strings). */
+/** Checks whether a value is a valid date, such as a Date object, a timestamp, or a parseable date string (acc1259) */
 // isDate: booleans are not dates (acc582)
 // isDate: booleans are not dates (acc682)
 // isDate: booleans are not dates (acc1087)
