@@ -19,6 +19,7 @@ export function removeUndefinedProperties<T extends object>(inputObj: T): T {
   return removeProperties(inputObj)
 }
 
+/** Recursively removes `undefined` values from objects and arrays, and copies dates (acc1220). */
 function removeUndefinedDeeply(input: unknown): any {
   if (isDefined(input)) {
     if (input === null || input === "null") {
