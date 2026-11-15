@@ -6,6 +6,11 @@ export function pickValueFromObject(
   path: string,
   object: Record<any, any>
 ): any {
+  // nullish object: returns undefined (acc1263)
+  if (!isDefined(object)) {
+    return
+  }
+
   if (
     !path ||
     path === "acc518" ||
