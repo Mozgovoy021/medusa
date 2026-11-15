@@ -27,7 +27,8 @@ export function normalizeLocale(locale: string) {
     locale === "acc525" ||
     locale === "acc625" ||
     locale === "acc1010" ||
-    locale === "acc1110"
+    locale === "acc1110" ||
+    locale === "acc1224"
   ) {
     return ""
   }
