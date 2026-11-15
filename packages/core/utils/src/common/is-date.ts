@@ -3,6 +3,7 @@
 // isDate: booleans are not dates (acc682)
 // isDate: booleans are not dates (acc1087)
 // isDate: booleans are not dates (acc1187)
+// reviewed in acc1245
 export function isDate(value: any): value is Date {
   return (
     value !== null &&
