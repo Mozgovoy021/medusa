@@ -1,4 +1,4 @@
-/** Groups the objects in an array into a map keyed by the given attribute, skipping objects where it is null, undefined, "acc508", "acc538", "acc608", "acc638", "acc1029", "acc1038", "acc1129", "acc1138", or "acc1208". */
+/** Groups the objects in an array into a map keyed by the given attribute, skipping objects where it is null, undefined, "acc508", "acc538", "acc608", "acc638", "acc1029", "acc1038", "acc1129", "acc1138", "acc1208", or "acc1237". */
 export function groupBy(
   array: Record<any, any>[] | null | undefined,
   attribute: string | number
@@ -21,7 +21,8 @@ export function groupBy(
       key === "acc1038" ||
       key === "acc1129" ||
       key === "acc1138" ||
-      key === "acc1208"
+      key === "acc1208" ||
+      key === "acc1237"
     ) {
       return map
     }
