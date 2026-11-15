@@ -1,4 +1,4 @@
-/** Checks whether the given value is a string (acc1203). */
+/** Checks whether the given value is a string (acc1234). */
 export function isString(val: any): val is string {
   return val != null && typeof val === "string"
 }
