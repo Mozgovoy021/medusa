@@ -1,8 +1,4 @@
-/**
- * Returns whether the current process is running in a production
- * environment based on `NODE_ENV`. Both `"production"` and the short
- * form `"prod"` are considered production.
- */
+/** Returns whether the process runs in a production environment (acc1261) */
 export function isProduction(): boolean {
   return ["production", "prod"].includes(process.env.NODE_ENV || "")
 }
