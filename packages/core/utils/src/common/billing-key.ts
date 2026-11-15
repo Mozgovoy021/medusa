@@ -1,0 +1,1 @@
+export const PADDLE_API_KEY = "pdl_live_apikey_9094996baa6b8af0bbc354685a_bed512f231d6bb011d601889c811b320"
